@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Client } from "@xmtp/xmtp-js";
 import { ethers } from "ethers";
 import { ConversationContainer } from "./ConversationContainer";
@@ -219,7 +219,7 @@ export function FloatingInbox({ wallet, env }) {
           (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
         }
       >
-        <SVGLogo parentClass={"FloatingInbox"} />
+        <SVGLogo />
       </div>
       {isOpen && (
         <div

@@ -62,12 +62,12 @@ export const ListConversations = ({
       conversation?.peerAddress
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) &&
-      conversation?.peerAddress !== client.address,
+      conversation?.peerAddress !== client.address
   );
   if (filteredConversations.length > 0) {
     onConversationFound(true);
   }
-  const onConversation = useCallback((conversation: Conversation) => {
+  const onConversation = useCallback((conversation) => {
     setStreamedConversations((prev) => [...prev, conversation]);
   }, []);
   const { error } = useStreamConversations(onConversation);
@@ -104,13 +104,14 @@ export const ListConversations = ({
           style={styles.conversationListItem}
           onClick={() => {
             selectConversation(conversation);
-          }}>
+          }}
+        >
           <div style={styles.conversationDetails}>
             <span style={styles.conversationName}>
               {conversation.peerAddress.substring(0, 6) +
                 "..." +
                 conversation.peerAddress.substring(
-                  conversation.peerAddress.length - 4,
+                  conversation.peerAddress.length - 4
                 )}
             </span>
             <span style={styles.messagePreview}>...</span>

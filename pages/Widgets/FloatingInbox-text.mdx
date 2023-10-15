@@ -1,8 +1,8 @@
-import { FloatingInbox } from "/components/FloatingInbox";
+import { FloatingInbox } from "/components/FloatingInbox-text";
 
-# Floating Inbox
+# Floating Inbox (Text)
 
-The `Inbox` widget is a floating messaging component designed to allow for integrating web3 messaging in any website.
+The `Inbox` widget is a floating messaging component designed to allow for integrating web3 messaging in any website. Uses the JS sdk and only text content types.
 
 <div className="widget-container">
   <FloatingInbox env="production" />
@@ -28,8 +28,8 @@ The Inbox widget can be controlled programmatically using global methods to open
 Use the following command to open or close the Inbox:
 
 ```jsx
-window.Inbox.open();
-window.Inbox.close();
+window.FloatingInbox.open();
+window.FloatingInbox.close();
 ```
 
 #### Example Integration

@@ -249,7 +249,10 @@ export function FloatingInbox({ wallet, env }) {
     <>
       <div
         onClick={isOpen ? closeWidget : openWidget}
-        className={isOpen ? "spin-clockwise" : "spin-counter-clockwise"}
+        className={
+          "FloatingInbox " +
+          (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
+        }
         style={styles.FloatingLogo}
       >
         <SVGLogo parentClass={"FloatingInbox"} />

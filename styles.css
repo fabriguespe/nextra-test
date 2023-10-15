@@ -24,7 +24,7 @@
   max-height: 500px;
 }
 
-.widget-container > .floating-logo {
+.widget-container > .FloatingInbox {
   position: relative !important;
   bottom: auto !important;
   right: auto !important;

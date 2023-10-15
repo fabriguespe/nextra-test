@@ -1,3 +1,46 @@
+import { ContactLink } from "/components/ContactLink";
+import Head from "next/head";
+
+# Contact Link Widget
+
+The `ContactLink` widget is a React component that displays a button. When clicked, it opens a contact form for the specified ENS or domain.
+
+<div className="widget-container ">
+  <ContactLink
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  />
+</div>
+
+### Props
+
+Here are the properties that you can pass to the `ContactLink` component:
+
+- `domain`: (Required) The ENS or domain of the user.
+- `walletAddress`: (Required) The wallet address of the user.
+- `defaultApp`: (Optional) The default messaging application to use when contacting the user.
+- `theme`: (Optional) The theme of the contact button. Accepts "default", "dark", or "light".
+- `showText`: (Optional) A boolean value determining whether to display the text on the button.
+- `deepLinkApps`: (Optional) An object containing information about different messaging apps.
+
+### Usage
+
+Here is an example of how to use the `ContactLink` component:
+
+```jsx
+<ContactLink
+  domain="shanemac.eth"
+  walletAddress="0xUserWalletAddress"
+  theme="light"
+  showText={true}
+/>
+```
+
+### Installation
+
+Copy paste the component into your project
+
+```jsx
 import React from "react";
 
 const styles = {
@@ -63,3 +106,8 @@ function SVGLogo({ width }) {
     </svg>
   );
 }
+```
+
+```jsx
+import { ContactLink } from "./ContactLink";
+```

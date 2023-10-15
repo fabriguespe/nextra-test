@@ -1,23 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ethers } from "ethers";
 import { Client, useClient } from "@xmtp/react-sdk";
 import { ConversationContainer } from "./ConversationContainer";
 
 export default function Home({ wallet, env, isPWA = false, onLogout }) {
-  const initialIsOpen =
-    isPWA || localStorage.getItem("isWidgetOpen") === "true" || false;
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOnNetwork, setIsOnNetwork] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const initialIsOnNetwork =
-    localStorage.getItem("isOnNetwork") === "true" || false;
-  const initialIsConnected =
-    (localStorage.getItem("isConnected") && wallet === "true") || false;
+  useEffect(() => {
+    const initialIsOpen =
+      isPWA || localStorage.getItem("isWidgetOpen") === "true" || false;
+    const initialIsOnNetwork =
+      localStorage.getItem("isOnNetwork") === "true" || false;
+    const initialIsConnected =
+      (localStorage.getItem("isConnected") && wallet === "true") || false;
+
+    setIsOpen(initialIsOpen);
+    setIsOnNetwork(initialIsOnNetwork);
+    setIsConnected(initialIsConnected);
+  }, []);
 
   const { client, error, isLoading, initialize } = useClient();
   const [loading, setLoading] = useState(false);
-
-  const [isOpen, setIsOpen] = useState(initialIsOpen);
-  const [isOnNetwork, setIsOnNetwork] = useState(initialIsOnNetwork);
-  const [isConnected, setIsConnected] = useState(initialIsConnected);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [signer, setSigner] = useState();
@@ -184,10 +189,13 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
   const closeWidget = () => {
     setIsOpen(false);
   };
-  window.FloatingInbox = {
-    open: openWidget,
-    close: closeWidget,
-  };
+
+  if (typeof window !== "undefined") {
+    window.FloatingInbox = {
+      open: openWidget,
+      close: closeWidget,
+    };
+  }
   const handleLogout = async () => {
     setIsConnected(false);
     const address = await getAddress(signer);
