@@ -1,23 +1,37 @@
-# Nextra Docs Template 
+# XMTP Prototypes
 
-This is a template for creating documentation with [Nextra](https://nextra.site).
+### Installation
 
-[**Live Demo →**](https://nextra-docs-template.vercel.app)
+```bash
+bun install
+bun start
+```
 
-[![](.github/screenshot.png)](https://nextra-docs-template.vercel.app)
+### Tutorials
 
-## Quick Start
+- [Subscribe to a newsletter with XMTP](/Tutorials/Subscribe)
+- [Broadcast a message to multiple wallets](/Tutorials/Broadcast)
 
-Click the button to clone this repository and deploy it on Vercel:
+### Widgets
 
-[![](https://vercel.com/button)](https://vercel.com/new/clone?s=https%3A%2F%2Fgithub.com%2Fshuding%2Fnextra-docs-template&showOptionalTeamCreation=false)
+- [Subscribe](/Widgets/Subscribe): Subscribe to another wallet, newsletter, company or campaign.
 
-## Local Development
+- [Enable](/Widgets/Enable): Button for enabling XMTP identity for the first time.
 
-First, run `pnpm i` to install the dependencies.
+- [Buttons](/Widgets/Buttons): Styled buttons with a dropdown showcasing different clients.
 
-Then, run `pnpm dev` to start the development server and visit localhost:3000.
+- [Profile Card](/Widgets/ProfileCard): This feature displays a user's profile card with a link to message directly.
 
-## License
+- [Contact Link](/Widgets/ContactLink): Linked image-only logo to put on footers, headers, navbars, profiles, etc.
 
-This project is licensed under the MIT License.
+- [Floating Inbox](/Widgets/FloatingInbox): Embeddable web bottom right chat widget with content types and js sdk.
+
+- [Floating Inbox (Text)](/Widgets/FloatingInbox-text): Embeddable web bottom right chat widget with only text.
+
+- [Floating Inbox (Hooks)](/Widgets/FloatingInbox-hooks): Inbox built with the react sdk hooks and only text.
+
+- [Floating Inbox (Hooks) PWA](/Widgets/FloatingInbox-hooks): Inbox built with the react sdk and hooks in PWA mode.
+
+- [Broadcast](/Widgets/Broadcast): Broadcast widgets for sending a message to multiple wallets.
+
+- [Contact Page](/Widgets/ContactPage): Page that opens a XMTP inboxes with deeplinking and metadata from ENS.
