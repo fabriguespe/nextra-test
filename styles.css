@@ -1,0 +1,43 @@
+/*WIDGETS*/
+.centered,
+.widget-container {
+  background: #fff;
+  border-radius: 8px 8px 0 0;
+  box-shadow: inset 0 0 0 1px #ededed;
+  display: flex;
+  padding: 48px;
+  position: relative;
+  transition: background 0.18s;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.widget-container.Link {
+  padding: 0px !important;
+  height: 500px;
+  z-index: 0;
+}
+
+.tabs-container pre {
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  max-height: 500px;
+}
+
+.widget-container > .floating-logo {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+pre {
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  max-height: 500px;
+}
+
+footer {
+  display: none;
+}
