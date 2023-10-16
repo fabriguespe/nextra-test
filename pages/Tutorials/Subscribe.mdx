@@ -1,0 +1,135 @@
+# Enabling Subscribers with XMTP
+
+import { Subscribe } from "/components/Subscribe";
+
+This tutorial will guide you on how to create a simple `Subscribe` that enables the user to subscribe to your messages or notifications.
+
+<div className="widget-container">
+  <Subscribe
+    theme="default"
+    size="medium"
+    onSubscribe={(address) => console.log("New subscriber: " + address)}
+    onUnsubscribe={(address) => console.log("Unsubscribed: " + address)}
+    onError={(address) => console.log("Error subscribing: " + address)}
+    env="production"
+  />
+</div>
+
+### Step 1: Import XMTP and Ethers Library
+
+Import the necessary XMTP and Ethereum packages. These libraries enable you to create an XMTP client and interact with the Ethereum blockchain.
+
+```jsx
+import React, { useEffect, useState } from "react";
+import { Client } from "@xmtp/react-sdk";
+import { ethers } from "ethers";
+```
+
+### Step 3: Subscirbe with Ethereum Wallet
+
+Your `connectWallet` function facilitates the connection to the user's Ethereum wallet.
+
+```jsx
+const connectWallet = async () => {
+  if (typeof window.ethereum !== "undefined") {
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      return provider.getSigner();
+    } catch (error) {
+      console.error("User rejected request", error);
+    }
+  } else {
+    console.error("Metamask not found");
+  }
+};
+```
+
+### Step 4: Initialize Your subscribers
+
+The very first step is to create an array that will store all the Ethereum addresses of the subscribed users.
+
+```jsx
+let subscriptionArray = [];
+```
+
+### Step 5: Define `Subscribe` and `Unsubscribe` Functions
+
+#### Subscribe Function
+
+When a user decides to subscribe, a new XMTP client is created specifically for that user. The Ethereum address is then appended to the `subscriptionArray` only after successful client creation. Here's a deeper look into how it works:
+
+```jsx
+async function subscribe(signer) {
+  // Create a new XMTP client
+  const xmtp = await Client.create(signer, { env: env });
+
+  // Fetch the Ethereum address from the signer
+  const address = await signer.getAddress();
+
+  // Append the Ethereum address to the subscriptionArray
+  if (!subscriptionArray.includes(address)) {
+    subscriptionArray.push(address);
+    // Trigger any additional XMTP logic for handling the subscription
+    if (onSubscribe) onSubscribe(xmtp.address);
+  }
+}
+```
+
+_Creating a new XMTP client is crucial because it enables the address on the XMTP network_
+
+#### Unsubscribe Function
+
+Unsubscribing is a relatively straightforward process, but it's crucial to ensure that the XMTP client tied to the user is properly shut down or invalidated.
+
+```jsx
+async function unsubscribe(signer) {
+  // Fetch the Ethereum address from the signer
+  const address = await signer.getAddress();
+
+  // Remove the Ethereum address from the subscriptionArray
+  const index = subscriptionArray.indexOf(address);
+  if (index > -1) {
+    subscriptionArray.splice(index, 1);
+    // Trigger any additional XMTP logic for handling the unsubscription
+    if (onUnsubscribe) onUnsubscribe(address);
+  }
+}
+```
+
+_Unsubscribing is only done at client level , not at protocol level._
+
+### Step 6: Implement the `checkSubscriptionStatus` Function
+
+This function checks the subscription status of a given Ethereum address by looking up its presence in `subscriptionArray`. This simultes of you have a local DB in your project and you want to check there first.
+
+```jsx
+async function checkSubscriptionStatus(address) {
+  return subscriptionArray.includes(address);
+}
+```
+
+Then, you can call this function in the React component's `useEffect` to set the initial status.
+
+```jsx
+useEffect(() => {
+  const init = async () => {
+    if (checkSubscriptionStatus && wallet) {
+      const address = await getAddress(wallet);
+      const isSubscribed = await checkSubscriptionStatus(address);
+      setSubscriptionStatus(isSubscribed ? "subscribed" : "unsubscribed");
+    }
+  };
+  init();
+}, [checkSubscriptionStatus, wallet]);
+```
+
+### Conclusion
+
+This tutorial guides you to build an XMTP subscription flow in React. If you want to learn how to send a message to your subscribers check out [Broadcast a message to multiple wallets](/Tutorials/Broadcast).
+
+#### Reference Widget
+
+For a complete working example, please refer to this complete widget page.
+
+- [Subscribe Widget](/Widgets/Subscribe)
