@@ -65,7 +65,6 @@ export function Button({
       left: "0",
       textAlign: "left",
       borderRadius: "5px",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       listStyle: "none",
       padding: "0",
       margin: "0",

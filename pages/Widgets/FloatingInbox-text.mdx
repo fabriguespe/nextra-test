@@ -81,7 +81,6 @@ export function Inbox({ wallet, env, relative = false }) {
       alignItems: "center",
       border: "1px solid #ccc",
       justifyContent: "center",
-      boxShadow: "0 2px 10px #ccc",
       cursor: "pointer",
       transition: "transform 0.3s ease",
       padding: "5px",
@@ -95,7 +94,6 @@ export function Inbox({ wallet, env, relative = false }) {
       border: "1px solid #ccc",
       backgroundColor: "#f9f9f9",
       borderRadius: "10px",
-      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "1000",
       overflow: "hidden",
       display: "flex",
@@ -223,31 +221,41 @@ export function Inbox({ wallet, env, relative = false }) {
     }
   };
 
+  // Function to initialize XMTP with keys
   const initXmtpWithKeys = async function () {
+    // If signer is not available, logout and return
     if (!signer) {
       handleLogout();
       return;
     }
     console.log("entra7");
+    // Get the address from the signer
     let address = await getAddress(signer);
+    // Load keys for the address
     let keys = loadKeys(address);
+    // Define client options
     const clientOptions = {
       env: env ? env : getEnv(),
     };
+    // If keys are not available, get keys from the client
     if (!keys) {
       keys = await Client.getKeys(signer, {
         ...clientOptions,
         skipContactPublishing: true,
         persistConversations: false,
       });
+      // Store the keys for the address
       storeKeys(address, keys);
     }
+    // Create XMTP client with the keys
     const xmtp = await Client.create(null, {
       ...clientOptions,
       privateKeyOverride: keys,
     });
 
+    // Set network status based on XMTP address availability
     setIsOnNetwork(!!xmtp.address);
+    // Set XMTP client
     setXmtpClient(xmtp);
   };
 
@@ -801,9 +809,6 @@ export const MessageInput = ({ onSendMessage, replyingToMessage }) => {
       alignItems: "center",
       textAlign: "center",
       textDecoration: "none",
-      ":hover": {
-        textDecoration: "underline",
-      },
     },
   };
   const handleInputChange = (event) => {

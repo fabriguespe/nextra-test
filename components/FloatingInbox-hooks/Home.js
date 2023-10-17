@@ -28,19 +28,18 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
   const [signer, setSigner] = useState();
 
   const styles = {
-    floatingLogo: {
+    FloatingLogo: {
       position: "fixed",
       bottom: "20px",
       right: "20px",
-      width: "30px",
-      height: "30px",
+      width: "40px",
+      height: "40px",
       borderRadius: "50%",
       backgroundColor: "white",
       display: "flex",
       alignItems: "center",
       border: "1px solid #ccc",
       justifyContent: "center",
-      boxShadow: "0 2px 10px #ccc",
       cursor: "pointer",
       transition: "transform 0.3s ease",
       padding: "5px",
@@ -54,7 +53,6 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
       border: isPWA == true ? "0px" : "1px solid #ccc",
       backgroundColor: "#f9f9f9",
       borderRadius: isPWA == true ? "0px" : "10px",
-      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "1000",
       overflow: "hidden",
       display: "flex",
@@ -212,22 +210,20 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
 
   return (
     <>
-      {!isPWA && (
-        <div
-          style={styles.floatingLogo}
-          onClick={isOpen ? closeWidget : openWidget}
-          className={
-            "FloatingInbox " +
-            (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
-          }
-        >
-          <SVGLogo parentClass={"FloatingInbox"} />
-        </div>
-      )}
+      <div
+        onClick={isOpen ? closeWidget : openWidget}
+        className={
+          "FloatingInbox " +
+          (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
+        }
+        style={styles.FloatingLogo}
+      >
+        <SVGLogo parentClass={"FloatingInbox"} />
+      </div>
       {isOpen && (
         <div
           style={styles.uContainer}
-          className={"FloatingInbox" + (isOnNetwork ? "expanded" : "")}
+          className={" " + (isOnNetwork ? "expanded" : "")}
         >
           {isConnected && (
             <button style={styles.logoutBtn} onClick={handleLogout}>

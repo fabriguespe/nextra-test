@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useConversations, useStreamConversations } from "@xmtp/react-sdk";
 
 export const ListConversations = ({
@@ -21,9 +21,7 @@ export const ListConversations = ({
       backgroundColor: "#f0f0f0",
       padding: "10px",
       transition: "background-color 0.3s ease",
-      ":hover": {
-        backgroundColor: "lightblue",
-      },
+
       padding: isPWA == true ? "15px" : "10px",
     },
     conversationDetails: {
@@ -64,9 +62,11 @@ export const ListConversations = ({
         .includes(searchTerm.toLowerCase()) &&
       conversation?.peerAddress !== client.address
   );
-  if (filteredConversations.length > 0) {
-    onConversationFound(true);
-  }
+  useEffect(() => {
+    if (filteredConversations.length > 0) {
+      onConversationFound(true);
+    }
+  }, [filteredConversations, onConversationFound]);
   const onConversation = useCallback((conversation) => {
     setStreamedConversations((prev) => [...prev, conversation]);
   }, []);

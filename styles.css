@@ -1,8 +1,7 @@
 /*WIDGETS*/
 .centered,
 .widget-container {
-  background: #fff;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
   box-shadow: inset 0 0 0 1px #ededed;
   display: flex;
   padding: 48px;
@@ -11,6 +10,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1;
+  margin-top: 10px;
 }
 .widget-container.Link {
   padding: 0px !important;
@@ -28,8 +28,6 @@
   position: relative !important;
   bottom: auto !important;
   right: auto !important;
-  width: 40px !important;
-  height: 40px !important;
 }
 
 pre {
@@ -37,7 +35,6 @@ pre {
   overflow-x: auto !important;
   max-height: 500px;
 }
-
 footer {
   display: none;
 }

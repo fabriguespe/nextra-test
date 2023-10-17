@@ -1,0 +1,110 @@
+import { ContactLink } from "/components/ContactLink";
+import { Button } from "/components/Button";
+
+# The Web3 `mailto:`
+
+## How XMTP Widgets can change the way we communicate online
+
+Remember the good old days of clicking a simple mailto: link to send an email? The convenience of initiating an email directly from a web page revolutionized online communication in its time. As we move into the era of Web3, XMTP widgets are poised to become the "mailto" of the decentralized communication world. By integrating these widgets, you can offer a seamless experience across multiple apps in the ecosystem, including [Coinbase Wallet](https://www.coinbase.com/wallet), [Converse](https://getconverse.app/), [Hey](https://hey.xyz/), [Orb](https://www.orb.ac/), and [xmtp.chat](https://xmtp.chat/). This blog post will walk you through how these widgets are making Web3 communication as simple as the `mailto:` link made email.
+
+- **Contact Link**: Enables you to contact someone through a simple url.
+- **Buttons**: Offers deeplink buttons to multiple apps of the xmtp ecosyste.
+- **Profile Card**: Similar to an email signature, provides link and context.
+
+#### Contact Link Widget
+
+The `Contact Link` Widget is akin to the compose window that pops up when you click a mailto: link. It opens a contact form that's associated with a specified ENS domain or wallet address, making the process of reaching out straightforward.
+
+<div className="widget-container ">
+  <ContactLink
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  />
+</div>
+
+Here is an example of how to use the `ContactLink` component:
+
+```jsx
+<ContactLink
+  domain="shanemac.eth"
+  walletAddress="0xUserWalletAddress"
+  theme="light"
+  showText={true}
+/>
+```
+
+**Reference Widget**
+
+For a complete working example, please refer to this complete widget page.
+
+- [Contact Link Widget](/Widgets/ContactLink)
+
+#### Buttons Widget
+
+If mailto: links could also direct you to WhatsApp, Telegram, or any other messaging platform, the experience would be phenomenal, wouldn't it? The Buttons Widget does exactly this in the Web3 context. It offers deeplinks to multiple platforms like [Coinbase Wallet](https://www.coinbase.com/wallet), [Converse](https://getconverse.app/), Hey, [Orb](https://www.orb.ac/), and .
+xmtp.chat
+
+<div className="widget-container">
+  <Button
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+    theme="light"
+    size="medium"
+  />
+</div>
+
+Here is an example of how to use the `Button` widget in your project. In this example, we are creating a button for the ENS domain "shanemac.eth" and the associated wallet address. The button will have a light theme and a medium size.
+
+```jsx
+<Button
+  domain="shanemac.eth"
+  walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  theme={"light"}
+  deepLinkApps={deepLinkApps}
+  size={"medium"}
+/>
+```
+
+**Reference Widget**
+
+For a complete working example, please refer to this complete widget page.
+
+- [Contact Buttons Widget](/Widgets/Buttons)
+
+import { ProfileCard } from "/components/ProfileCard";
+
+#### Profile Card Widget
+
+hink of the Profile Card Widget as an advanced form of the email signature, but with a lot more context and a built-in call-to-action. This widget offers a rounded snapshot of a user or entity, along with a direct line for communication.
+
+<div className="widget-container">
+  <ProfileCard
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+    description="Hi, I'm Shane, Co-Founder of XMTP."
+    image="https://pbs.twimg.com/profile_images/1561559544148500480/lBJtF9DK_400x400.jpg"
+    theme="default"
+    size="medium"
+  />
+</div>
+
+```jsx
+<ProfileCard
+  domain="shanemac.eth"
+  walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  description="Hi, I'm Shane, Co-Founder of XMTP."
+  image="https://pbs.twimg.com/profile_images/1561559544148500480/lBJtF9DK_400x400.jpg"
+  theme="default"
+  size="medium"
+/>
+```
+
+**Reference Widget**
+
+For a complete working example, please refer to this complete widget page.
+
+- [Profile Card Widget](/Widgets/Buttons)
+
+**Conclusion**
+
+The digital world is evolving, and as it does, our means of communication must adapt. XMTP widgets are a step toward making Web3 interactions as seamless and straightforward as clicking a mailto: link once was for email. By embracing these widgets, you can be on the forefront of this new era of online communication.

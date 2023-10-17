@@ -24,13 +24,14 @@ export const MessageItem = ({ message, senderAddress, client }) => {
   return (
     <MessageComponent
       style={isSender ? styles.senderMessage : styles.receiverMessage}
-      key={message.id}>
+      key={message.id}
+    >
       <div style={styles.messageContent}>
         {renderMessage(message)}
         <div style={styles.footer}>
           <span style={styles.timeStamp}>
             {`${new Date(message.sent).getHours()}:${String(
-              new Date(message.sent).getMinutes(),
+              new Date(message.sent).getMinutes()
             ).padStart(2, "0")}`}
           </span>
         </div>

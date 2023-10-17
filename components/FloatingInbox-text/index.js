@@ -12,24 +12,23 @@ export function FloatingInbox({ wallet, env }) {
   const [signer, setSigner] = useState();
 
   const styles = {
-    floatingLogo: {
+    FloatingLogo: {
       position: "fixed",
       bottom: "20px",
       right: "20px",
-      width: "30px",
-      height: "30px",
+      width: "40px",
+      height: "40px",
       borderRadius: "50%",
       backgroundColor: "white",
       display: "flex",
       alignItems: "center",
       border: "1px solid #ccc",
       justifyContent: "center",
-      boxShadow: "0 2px 10px #ccc",
       cursor: "pointer",
       transition: "transform 0.3s ease",
       padding: "5px",
     },
-    Button: {
+    uContainer: {
       position: "fixed",
       bottom: "70px",
       right: "20px",
@@ -38,7 +37,6 @@ export function FloatingInbox({ wallet, env }) {
       border: "1px solid #ccc",
       backgroundColor: "#f9f9f9",
       borderRadius: "10px",
-      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "1000",
       overflow: "hidden",
       display: "flex",
@@ -212,19 +210,19 @@ export function FloatingInbox({ wallet, env }) {
   return (
     <>
       <div
-        style={styles.floatingLogo}
         onClick={isOpen ? closeWidget : openWidget}
         className={
           "FloatingInbox " +
           (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
         }
+        style={styles.FloatingLogo}
       >
-        <SVGLogo />
+        <SVGLogo parentClass={"FloatingInbox"} />
       </div>
       {isOpen && (
         <div
-          style={styles.Button}
-          className={"FloatingInbox" + (isOnNetwork ? "expanded" : "")}
+          style={styles.uContainer}
+          className={"" + (isOnNetwork ? "expanded" : "")}
         >
           {isConnected && (
             <button style={styles.logoutBtn} onClick={handleLogout}>

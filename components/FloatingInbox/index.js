@@ -147,30 +147,19 @@ export function FloatingInbox({ wallet, env }) {
       position: "fixed",
       bottom: "20px",
       right: "20px",
-      width: "30px",
-      height: "30px",
+      width: "40px",
+      height: "40px",
       borderRadius: "50%",
       backgroundColor: "white",
       display: "flex",
       alignItems: "center",
       border: "1px solid #ccc",
       justifyContent: "center",
-      boxShadow: "0 2px 10px #ccc",
       cursor: "pointer",
       transition: "transform 0.3s ease",
       padding: "5px",
-      ":active": {
-        transform: "scale(0.9)",
-      },
-      ":hover": {
-        transform: "scale(1.05)",
-      },
-      ":hover path": {
-        transform: "rotate(360deg)",
-        fill: "#ef4444",
-      },
     },
-    Button: {
+    uContainer: {
       position: "fixed",
       bottom: "70px",
       right: "20px",
@@ -179,14 +168,10 @@ export function FloatingInbox({ wallet, env }) {
       border: "1px solid #ccc",
       backgroundColor: "#f9f9f9",
       borderRadius: "10px",
-      boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "1000",
       overflow: "hidden",
       display: "flex",
       flexDirection: "column",
-      "&.expanded": {
-        height: "400px",
-      },
     },
     WidgetHeader: {
       padding: "5px",
@@ -258,7 +243,10 @@ export function FloatingInbox({ wallet, env }) {
         <SVGLogo parentClass={"FloatingInbox"} />
       </div>
       {isOpen && (
-        <div className={isOnNetwork ? "expanded" : ""} style={styles.Button}>
+        <div
+          className={isOnNetwork ? "expanded" : ""}
+          style={styles.uContainer}
+        >
           {isConnected && (
             <button onClick={handleLogout} style={styles.LogoutBtn}>
               Logout

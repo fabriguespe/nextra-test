@@ -36,24 +36,6 @@ Here is an example of how to use the `Button` widget in your project. In this ex
 />
 ```
 
-### Constructing the Button Component
-
-The `Button` component is a functional component in React. It utilizes the `useState` and `useEffect` hooks from React for state management and handling side effects.
-
-Here is a concise explanation of the logic within the component:
-
-1. **Props**: The component takes in several props including `domain`, `walletAddress`, `deepLinkApps`, `theme`, `size`, and `device`. These props are utilized to customize the functionality and appearance of the button.
-
-2. **State**: The component employs two state variables - `deviceSpecificApps` and `showApps`. `deviceSpecificApps` is an array that holds the apps specific to the user's device. `showApps` is a boolean that decides whether to display the dropdown with the apps or not.
-
-3. **Effects**: The component has a single effect that runs when the component mounts. This effect invokes the `detectDevice` function to identify the user's device and then filters the apps based on the device using the `filterAppsByDevice` function.
-
-4. **Functions**: The component defines several functions including `getEstimatedWidth`, `detectDevice`, and `filterAppsByDevice`. `getEstimatedWidth` estimates the width of the button based on the length of the names of the supported apps. `detectDevice` identifies the user's device. `filterAppsByDevice` filters the apps based on the device.
-
-5. **Render**: The component returns a button with a dropdown. The dropdown contains the apps specific to the user's device. When the user clicks on an app, it opens the corresponding app.
-
-To construct a similar component, you would define the props, state, effects, functions, and render method as described above. You would also need to import the necessary dependencies and styles.
-
 ### Installation
 
 Before you can use the `Button` widget, you need to install the required dependencies. You can do this by running the following command in your project's root directory.
@@ -136,7 +118,6 @@ export function Button({
       left: "0",
       textAlign: "left",
       borderRadius: "5px",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
       listStyle: "none",
       padding: "0",
       margin: "0",

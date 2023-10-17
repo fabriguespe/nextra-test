@@ -1,0 +1,277 @@
+# Create a Floating Inbox widget with XMTP
+
+import { FloatingInbox } from "/components/FloatingInbox-text";
+
+This tutorial will guide you on how to create a simple `Subscribe` that enables the user to subscribe to your messages or notifications.
+
+<div className="widget-container">
+  <FloatingInbox env="production" />
+</div>
+
+### Step 1: Initial Setup
+
+Create a new file, let's say `Inbox.js` , and import the required modules:
+
+```javascript
+import React, { useState, useEffect } from "react";
+import { Client } from "@xmtp/xmtp-js";
+import { ethers } from "ethers";
+```
+
+### Connect Wallet with ethers.js
+
+The first step in using XMTP is to connect to an Ethereum wallet. You can use the
+`ethers.js` library for this purpose.
+
+```jsx
+import { ethers } from "ethers";
+
+// Function to connect to the Ethereum wallet
+const connectWallet = async () => {
+  // Check if Ethereum is injected into the window object
+  if (typeof window.ethereum !== "undefined") {
+    try {
+      // Request access to the user's Ethereum accounts
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      // Create a new provider and return the signer
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      return provider.getSigner();
+    } catch (error) {
+      // Log any errors that occur during the connection process
+      console.error("User rejected request", error);
+    }
+  } else {
+    // Log an error if Metamask is not found
+    console.error("Metamask not found");
+  }
+};
+```
+
+### Create XMTP Client
+
+Once the wallet is connected, you can then initialize the XMTP client using the `@xmtp/xmtp-js`
+library.
+
+```javascript
+import { Client } from "@xmtp/xmtp-js";
+
+// Function to initialize XMTP with keys
+const initXmtpWithKeys = async function () {
+  // If signer is not available, logout and return
+  if (!signer) {
+    handleLogout();
+    return;
+  }
+  console.log("entra7");
+  // Get the address from the signer
+  let address = await getAddress(signer);
+  // Load keys for the address
+  let keys = loadKeys(address);
+  // Define client options
+  const clientOptions = {
+    env: env ? env : getEnv(),
+  };
+  // If keys are not available, get keys from the client
+  if (!keys) {
+    keys = await Client.getKeys(signer, {
+      ...clientOptions,
+      skipContactPublishing: true,
+      persistConversations: false,
+    });
+    // Store the keys for the address
+    storeKeys(address, keys);
+  }
+  // Create XMTP client with the keys
+  const xmtp = await Client.create(null, {
+    ...clientOptions,
+    privateKeyOverride: keys,
+  });
+
+  // Set network status based on XMTP address availability
+  setIsOnNetwork(!!xmtp.address);
+  // Set XMTP client
+  setXmtpClient(xmtp);
+};
+```
+
+### Load Conversations
+
+To load existing conversations, you would generally use the `listConversations` method
+from the XMTP client.
+
+```jsx
+const fetchAndStreamConversations = async () => {
+  setLoading(true);
+  const allConversations = await client.conversations.list();
+
+  const sortedConversations = allConversations.sort(
+    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+  );
+  if (isMounted) {
+    setConversations(sortedConversations);
+  }
+  setLoading(false);
+  stream = await client.conversations.stream();
+  for await (const conversation of stream) {
+    console.log(`New conversation started with ${conversation.peerAddress}`);
+    if (isMounted) {
+      setConversations((prevConversations) => {
+        const newConversations = [...prevConversations, conversation];
+        return newConversations.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+      });
+    }
+    break;
+  }
+};
+
+fetchAndStreamConversations();
+```
+
+### Load Messages in a Conversation
+
+After loading the conversations, you may want to load the messages within a selected
+conversation.
+
+```jsx
+const fetchMessages = async () => {
+  if (conversation && conversation.peerAddress && isFirstLoad.current) {
+    setIsLoading(true);
+    const initialMessages = await conversation?.messages();
+
+    let updatedMessages = [];
+    initialMessages.forEach((message) => {
+      updatedMessages = updateMessages(updatedMessages, message);
+    });
+
+    setMessages(updatedMessages);
+    setIsLoading(false);
+    isFirstLoad.current = false;
+  }
+};
+
+fetchMessages();
+```
+
+### Create a New Conversation
+
+Creating a new conversation involves using the `createConversation` method.
+
+```javascript
+const createNewConversation = async (xmtpClient, participant) => {
+  const conversation = await xmtpClient.createConversation([participant]);
+  return conversation;
+};
+```
+
+### Stream messages
+
+```jsx
+const startMessageStream = async () => {
+  let stream = await conversation.streamMessages();
+  for await (const message of stream) {
+    setMessages((prevMessages) => {
+      return updateMessages(prevMessages, message);
+    });
+  }
+};
+```
+
+### Wrapping as a Floating Widget
+
+To make this all a floating widget, you'd essentially need to wrap your UI elements
+in a container div that has CSS styles applied to make it "float" on the page.
+
+```css
+.floating-widget {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 300px;
+  height: 400px;
+  z-index: 1000;
+  /* Add other styles as needed */
+}
+```
+
+Then your JSX might look like:
+
+```jsx
+return (
+  <>
+    <div
+      style={styles.floatingLogo}
+      onClick={isOpen ? closeWidget : openWidget}
+      className={
+        "FloatingInbox " +
+        (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
+      }
+    >
+      <SVGLogo />
+    </div>
+    {isOpen && (
+      <div
+        style={styles.Button}
+        className={"FloatingInbox" + (isOnNetwork ? "expanded" : "")}
+      >
+        {isConnected && (
+          <button style={styles.logoutBtn} onClick={handleLogout}>
+            Logout
+          </button>
+        )}
+        {isConnected && isOnNetwork && (
+          <div style={styles.widgetHeader}>
+            <div style={styles.conversationHeader}>
+              {isOnNetwork && selectedConversation && (
+                <button
+                  style={styles.backButton}
+                  onClick={() => {
+                    setSelectedConversation(null);
+                  }}
+                >
+                  ←
+                </button>
+              )}
+              <h4 style={styles.conversationHeaderH4}>Conversations</h4>
+            </div>
+          </div>
+        )}
+        <div style={styles.widgetContent}>
+          {!isConnected && (
+            <div style={styles.xmtpContainer}>
+              <button style={styles.btnXmtp} onClick={connectWallet}>
+                Connect Wallet
+              </button>
+            </div>
+          )}
+          {isConnected && !isOnNetwork && (
+            <div style={styles.xmtpContainer}>
+              <button style={styles.btnXmtp} onClick={initXmtpWithKeys}>
+                Connect to XMTP
+              </button>
+            </div>
+          )}
+          {isConnected && isOnNetwork && xmtpClient && (
+            <ConversationContainer
+              client={xmtpClient}
+              selectedConversation={selectedConversation}
+              setSelectedConversation={setSelectedConversation}
+            />
+          )}
+        </div>
+      </div>
+    )}
+  </>
+);
+```
+
+### Conclusion
+
+That's a high-level overview of how to create a floating inbox widget using XMTP. Customize it further according to your requirements.
+
+#### Reference Widget
+
+For a complete working example, please refer to this complete widget page.
+
+- [FloatingInbox Widget](/Widgets/FloatingInbox)
