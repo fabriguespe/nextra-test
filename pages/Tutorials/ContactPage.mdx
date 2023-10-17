@@ -1,0 +1,106 @@
+# How to Create an ENS + XMTP Contact Page in React
+
+In this tutorial, you'll learn how to create an ENS + XMTP Contact Page using React. This page will resolve an Ethereum Name Service (ENS) domain to an Ethereum address and check if the address can send messages using XMTP (a hypothetical messaging protocol for Ethereum).
+
+### Step 1: Install Required Packages
+
+You'll need to install the ethers.js library and any other XMTP libraries you are using.
+
+```bash
+npm install ethers @xmtp/xmtp-js @ensdomains/ens-avatar
+```
+
+### Step 3: Importing Libraries
+
+In your React component file, import the necessary modules:
+
+```jsx
+import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
+import { Client } from "@xmtp/xmtp-js";
+import { AvatarResolver } from "@ensdomains/ens-avatar";
+```
+
+### Step 4: Initialize State Variables
+
+Initialize your state variables using the useState hook.
+
+```jsx
+const [isLoadingResolveDomain, setIsLoadingResolveDomain] = useState(true);
+const [walletAddress, setWalletAddress] = useState(null);
+// ... more state variables
+```
+
+### Step 5: Resolve Domain to Address
+
+Create a function to resolve the ENS domain to an Ethereum address.
+
+```jsx
+// Function to resolve domain to address
+const resolveDomainToAddress = async () => {
+  // Set loading state
+  setIsLoadingResolveDomain(true);
+  try {
+    // Create new provider
+    const provider = new ethers.providers.CloudflareProvider();
+    // Resolve domain to address
+    const resolvedAddress = await provider.resolveName(domain);
+    // Check if domain is an Ethereum domain
+    const isEthDomain = /\.eth$/.test(domain);
+    // Check if resolved address is a valid Ethereum address
+    const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(resolvedAddress);
+
+    // If address is resolved, domain is Ethereum domain and address is valid
+    if (resolvedAddress && isEthDomain && isValidEthereumAddress) {
+      // Set wallet address
+      setWalletAddress(resolvedAddress);
+      // Create new avatar resolver
+      const avt = new AvatarResolver(provider);
+      // Get avatar URI
+      const avatarURI = await avt.getAvatar(domain);
+      // Set avatar
+      setAvatar(avatarURI);
+    } else {
+      // If address is not resolved or domain is not Ethereum domain or address is not valid, set wallet address to null
+      setWalletAddress(null);
+    }
+  } catch (error) {
+    // Log any errors
+    console.log(error);
+  } finally {
+    // Reset loading state
+    setIsLoadingResolveDomain(false);
+  }
+};
+```
+
+### Step 6: Check Messaging Capability with XMTP
+
+Add logic to check whether the resolved Ethereum address can send messages via XMTP.
+
+```jsx
+const [canMessage, setCanMessage] = useState(null);
+
+useEffect(() => {
+  const checkCanMessage = async () => {
+    setIsLoadingCanMessage(true);
+    try {
+      const result = await Client.canMessage(walletAddress);
+      setCanMessage(result);
+    } catch (error) {
+      console.log("Error checking canMessage:", error);
+      setCanMessage(false);
+    } finally {
+      setIsLoadingCanMessage(false);
+    }
+  };
+
+  checkCanMessage();
+}, [walletAddress]);
+```
+
+**Reference Widget**
+
+For a complete working example, please refer to this complete widget page.
+
+- [Contact Page Widget](/Widgets/ContactPage)

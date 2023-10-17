@@ -100,27 +100,41 @@ export function ContactPage({
 
   const [avatar, setAvatar] = useState(null);
 
+  // Function to resolve domain to address
   const resolveDomainToAddress = async () => {
+    // Set loading state
     setIsLoadingResolveDomain(true);
     try {
+      // Create new provider
       const provider = new ethers.providers.CloudflareProvider();
+      // Resolve domain to address
       const resolvedAddress = await provider.resolveName(domain);
+      // Check if domain is an Ethereum domain
       const isEthDomain = /\.eth$/.test(domain);
+      // Check if resolved address is a valid Ethereum address
       const isValidEthereumAddress = /^0x[a-fA-F0-9]{40}$/.test(
         resolvedAddress
       );
 
+      // If address is resolved, domain is Ethereum domain and address is valid
       if (resolvedAddress && isEthDomain && isValidEthereumAddress) {
+        // Set wallet address
         setWalletAddress(resolvedAddress);
+        // Create new avatar resolver
         const avt = new AvatarResolver(provider);
+        // Get avatar URI
         const avatarURI = await avt.getAvatar(domain);
+        // Set avatar
         setAvatar(avatarURI);
       } else {
+        // If address is not resolved or domain is not Ethereum domain or address is not valid, set wallet address to null
         setWalletAddress(null);
       }
     } catch (error) {
+      // Log any errors
       console.log(error);
     } finally {
+      // Reset loading state
       setIsLoadingResolveDomain(false);
     }
   };
