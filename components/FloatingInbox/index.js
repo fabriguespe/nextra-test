@@ -69,10 +69,17 @@ export function FloatingInbox({ wallet, env }) {
 
   const getAddress = async (signer) => {
     try {
-      return await signer?.getAddress();
+      if (signer && typeof signer.getAddress === "function") {
+        return await signer.getAddress();
+      }
+      if (signer && typeof signer.getAddresses === "function") {
+        //viem
+        const [address] = await signer.getAddresses();
+        return address;
+      }
+      return null;
     } catch (e) {
       console.log(e);
-      console.log("entra3");
     }
   };
 

@@ -1,7 +1,15 @@
+import { ContactPage } from "/components/ContactPage";
+
 # How to Create an ENS + XMTP Contact Page in React
 
 In this tutorial, you'll learn how to create an ENS + XMTP Contact Page using React. This page will resolve an Ethereum Name Service (ENS) domain to an Ethereum address and check if the address can send messages using XMTP (a hypothetical messaging protocol for Ethereum).
 
+<div className="widget-container Link">
+  <ContactPage
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  />
+</div>
 ### Step 1: Install Required Packages
 
 You'll need to install the ethers.js library and any other XMTP libraries you are using.

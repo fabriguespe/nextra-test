@@ -2,7 +2,7 @@ import { FloatingInbox } from "/components/FloatingInbox-hooks";
 
 # Floating Inbox (React Hooks)
 
-The `Inbox` widget is a floating messaging component designed to allow for integrating web3 messaging in any website. Uses React SDK hooks.
+The widget is a floating messaging component designed to allow for integrating web3 messaging in any website. Uses React SDK hooks.
 
 <div className="widget-container">
   <FloatingInbox env="production" />
@@ -214,10 +214,17 @@ export function Inbox({ wallet, env, relative = false }) {
 
   const getAddress = async (signer) => {
     try {
-      return await signer?.getAddress();
+      if (signer && typeof signer.getAddress === "function") {
+        return await signer.getAddress();
+      }
+      if (signer && typeof signer.getAddresses === "function") {
+        //viem
+        const [address] = await signer.getAddresses();
+        return address;
+      }
+      return null;
     } catch (e) {
       console.log(e);
-      console.log("entra3");
     }
   };
 

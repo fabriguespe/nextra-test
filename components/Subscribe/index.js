@@ -65,7 +65,15 @@ export function Subscribe({
 
   const getAddress = async (signer) => {
     try {
-      return await signer?.getAddress();
+      if (signer && typeof signer.getAddress === "function") {
+        return await signer.getAddress();
+      }
+      if (signer && typeof signer.getAddresses === "function") {
+        //viem
+        const [address] = await signer.getAddresses();
+        return address;
+      }
+      return null;
     } catch (e) {
       console.log(e);
     }
@@ -151,7 +159,8 @@ export function Subscribe({
   return (
     <div
       style={styles.SubscribeButtonContainer}
-      className={`Subscribe ${loading ? "loading" : ""}`}>
+      className={`Subscribe ${loading ? "loading" : ""}`}
+    >
       <button style={styles.SubscribeButton} onClick={handleClick}>
         {loading
           ? labels.loading
