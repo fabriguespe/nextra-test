@@ -7,10 +7,16 @@ bun install
 bun start
 ```
 
+### Blog Posts
+
+- [How XMTP Widgets can change the way we communicate online](/Posts/Contact)
+
 ### Tutorials
 
 - [Subscribe to a newsletter with XMTP](/Tutorials/Subscribe)
 - [Broadcast a message to multiple wallets](/Tutorials/Broadcast)
+- [Create a Floating Inbox widget with XMTP](/Tutorials/FloatingInbox)
+- [How to Create an ENS + XMTP Contact Page in React](/Tutorials/ContactPage)
 
 ### Widgets
 
