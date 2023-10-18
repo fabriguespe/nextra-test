@@ -21,22 +21,11 @@ export function Subscribe({
   const [loading, setLoading] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState("none");
 
-  const spin = `
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
   const styles = {
     SubscribeButtonContainer: {
       position: "relative",
       display: "inline-block",
       borderRadius: "5px",
-      animation: `${loading ? spin : ""} 0.5s linear infinite`,
     },
     SubscribeButton: {
       display: "inline-flex",

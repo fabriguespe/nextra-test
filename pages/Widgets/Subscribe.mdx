@@ -86,23 +86,11 @@ export function Subscribe({
   const [loading, setLoading] = useState(false); // Indicates if the component is in a loading state
   const [subscriptionStatus, setSubscriptionStatus] = useState("none"); // Tracks the subscription status
 
-  // Define CSS for animations and button styling
-  const spin = `
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
   const styles = {
     SubscribeButtonContainer: {
       position: "relative",
       display: "inline-block",
       borderRadius: "5px",
-      animation: `${loading ? spin : ""} 0.5s linear infinite`,
     },
     SubscribeButton: {
       display: "inline-flex",
