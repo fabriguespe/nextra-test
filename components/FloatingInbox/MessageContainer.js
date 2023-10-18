@@ -55,7 +55,7 @@ export const MessageContainer = ({
 
   const handleReaction = async (message, emoji) => {
     const existingReaction = Array.from(message.reactions || []).find(
-      (r) => r === emoji,
+      (r) => r === emoji
     );
     const action = existingReaction ? "removed" : "added";
 
@@ -102,7 +102,7 @@ export const MessageContainer = ({
     }
 
     const doesMessageExist = prevMessages.some(
-      (existingMessage) => existingMessage.id === newMessage.id,
+      (existingMessage) => existingMessage.id === newMessage.id
     );
 
     if (!doesMessageExist) {
@@ -164,7 +164,7 @@ export const MessageContainer = ({
               {},
               {
                 contentType: ContentTypeReadReceipt,
-              },
+              }
             );
             setLastReadMessageId(lastUnreadMessage.id);
           } catch (error) {
@@ -180,7 +180,7 @@ export const MessageContainer = ({
   const handleSendMessage = async (
     newMessage,
     image,
-    replyingToMessage = null,
+    replyingToMessage = null
   ) => {
     if (!newMessage.trim() && !image) {
       alert("empty message");
@@ -239,7 +239,7 @@ export const MessageContainer = ({
 
       const encryptedEncoded = await RemoteAttachmentCodec.encodeEncrypted(
         attachment,
-        new AttachmentCodec(),
+        new AttachmentCodec()
       );
 
       class Upload {
@@ -302,13 +302,13 @@ export const MessageContainer = ({
     try {
       const attachment = await RemoteAttachmentCodec.load(
         message.content,
-        client,
+        client
       );
       if (attachment && attachment.data) {
         const objectURL = URL.createObjectURL(
           new Blob([Buffer.from(attachment.data)], {
             type: attachment.mimeType,
-          }),
+          })
         );
         return objectURL;
       }
@@ -326,7 +326,7 @@ export const MessageContainer = ({
         if (message.contentType.sameAs(ContentTypeRemoteAttachment)) {
           newImageSources[message.id] = await getImageSrcFromMessage(
             message,
-            client,
+            client
           );
         }
       }
@@ -340,13 +340,13 @@ export const MessageContainer = ({
   return (
     <div style={styles.messagesContainer}>
       {isLoading ? (
-        <small className="loading">Loading messages...</small>
+        <small style={styles.loadingText}>Loading messages...</small>
       ) : (
         <>
           <ul style={styles.messagesList}>
             {messages.slice().map((message) => {
               let originalMessage = messages.find(
-                (m) => m.id === message.content.reference,
+                (m) => m.id === message.content.reference
               );
               return (
                 <MessageItem

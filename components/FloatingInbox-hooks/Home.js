@@ -70,7 +70,7 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
       cursor: "pointer",
     },
     widgetHeader: {
-      padding: "5px",
+      padding: "2px",
     },
     conversationHeader: {
       display: "flex",
@@ -124,6 +124,7 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
 
   useEffect(() => {
     if (wallet) {
+      console.log(wallet);
       setSigner(wallet);
       setIsConnected(true);
     }
@@ -141,6 +142,7 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
         await window.ethereum.enable();
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         setSigner(provider.getSigner());
+        console.log(provider.getSigner());
         setIsConnected(true);
       } catch (error) {
         console.error("User rejected request", error);

@@ -20,6 +20,9 @@ export const MessageContainer = ({ conversation, client, isPWA = false }) => {
       height: "100%",
       fontSize: isPWA == true ? "1.2em" : ".9em", // Increased font size
     },
+    loadingText: {
+      textAlign: "center",
+    },
     messagesList: {
       paddingLeft: "5px",
       paddingRight: "5px",
@@ -36,7 +39,7 @@ export const MessageContainer = ({ conversation, client, isPWA = false }) => {
     (message) => {
       setStreamedMessages((prev) => [...prev, message]);
     },
-    [streamedMessages],
+    [streamedMessages]
   );
 
   useStreamMessages(conversation, { onMessage });
@@ -63,7 +66,7 @@ export const MessageContainer = ({ conversation, client, isPWA = false }) => {
   return (
     <div style={styles.messagesContainer}>
       {isLoading ? (
-        <small className="loading">Loading messages...</small>
+        <small style={styles.loadingText}>Loading messages...</small>
       ) : (
         <>
           <ul style={styles.messagesList}>
