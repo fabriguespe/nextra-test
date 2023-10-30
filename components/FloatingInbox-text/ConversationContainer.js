@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { MessageContainer } from "./MessageContainer";
 import { ListConversations } from "./ListConversations";
+import { ListConversations as ListConversationsConsent } from "./ListConversations-consent";
 
 export const ConversationContainer = ({
   client,
@@ -151,17 +152,29 @@ export const ConversationContainer = ({
             style={styles.peerAddressInput}
           />
           {loadingResolve && searchTerm && <small>Resolving address...</small>}
-          <ListConversations
-            isPWA={isPWA}
-            isConsent={isConsent}
-            client={client}
-            searchTerm={searchTerm}
-            selectConversation={setSelectedConversation}
-            onConversationFound={(state) => {
-              setConversationFound(state);
-              if (state == true) setCreateNew(false);
-            }}
-          />
+          {isConsent ? (
+            <ListConversationsConsent
+              isPWA={isPWA}
+              client={client}
+              searchTerm={searchTerm}
+              selectConversation={setSelectedConversation}
+              onConversationFound={(state) => {
+                setConversationFound(state);
+                if (state == true) setCreateNew(false);
+              }}
+            />
+          ) : (
+            <ListConversations
+              isPWA={isPWA}
+              client={client}
+              searchTerm={searchTerm}
+              selectConversation={setSelectedConversation}
+              onConversationFound={(state) => {
+                setConversationFound(state);
+                if (state == true) setCreateNew(false);
+              }}
+            />
+          )}
           {message && <small>{message}</small>}
           {peerAddress && canMessage && (
             <button
@@ -181,6 +194,7 @@ export const ConversationContainer = ({
           isContained={isContained}
           conversation={selectedConversation}
           searchTerm={searchTerm}
+          isConsent={isConsent}
           selectConversation={selectConversation}
         />
       )}

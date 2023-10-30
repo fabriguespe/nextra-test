@@ -143,7 +143,7 @@ export function FloatingInbox({
     if (signer && isOnNetwork) {
       initXmtpWithKeys();
     }
-  }, [wallet]);
+  }, [wallet, isOnNetwork, isConnected]);
 
   useEffect(() => {
     localStorage.setItem("isOnNetwork", isOnNetwork.toString());
@@ -158,7 +158,7 @@ export function FloatingInbox({
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         setSigner(signer);
-        console.log("Your address", signer.address);
+        console.log("Your address", await getAddress(signer));
         setIsConnected(true);
       } catch (error) {
         console.error("User rejected request", error);
@@ -228,7 +228,6 @@ export function FloatingInbox({
       handleLogout();
       return;
     }
-    console.log("entra7");
     let address = await getAddress(signer);
     let keys = loadKeys(address);
     const clientOptions = {
@@ -246,11 +245,14 @@ export function FloatingInbox({
       ...clientOptions,
       privateKeyOverride: keys,
       useSnap: true,
-      enableConsentList: true,
     });
-
+    console.log("xmtp", xmtp);
     setClient(xmtp);
     setIsOnNetwork(!!xmtp.address);
+    if (isConsent) {
+      //Refresh consent
+      await xmtp.contacts.refreshConsentList();
+    }
   };
 
   return (

@@ -8,11 +8,16 @@ export const MessageContainer = ({
   searchTerm,
   isContained = false,
   selectConversation,
+  isConsent = false,
 }) => {
   const isFirstLoad = useRef(true);
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
+  const [showPopup, setShowPopup] = useState(
+    conversation.consentState === "unknown"
+  );
+
   const styles = {
     loadingText: {
       textAlign: "center",
@@ -32,6 +37,32 @@ export const MessageContainer = ({
       display: "flex",
       flexDirection: "column",
       overflowY: "auto",
+    },
+    popup: {
+      width: "100%",
+      padding: "10px",
+      backgroundColor: "rgba(211, 211, 211, 0.3)", // lightgrey with transparency
+    },
+    popupInner: {
+      display: "flex",
+      justifyContent: "space-evenly",
+      width: "100%",
+    },
+    popupButton: {
+      borderRadius: "12px", // Rounded corners
+      paddingLeft: "10px", // Some padding on the left
+      paddingRight: "10px", // Some padding on the right
+    },
+    acceptButton: {
+      backgroundColor: "blue", // Blue background
+      color: "white", // White text
+    },
+    blockButton: {
+      backgroundColor: "red", // Red background
+      color: "white", // White text
+    },
+    popupTitle: {
+      textAlign: "center",
     },
   };
 
@@ -67,6 +98,19 @@ export const MessageContainer = ({
     fetchMessages();
   }, [conversation]);
 
+  const handleAccept = async () => {
+    await client.contacts.allow([conversation.peerAddress]);
+    setShowPopup(false);
+    await client.contacts.refreshConsentList();
+    console.log("accepted");
+  };
+
+  const handleBlock = async () => {
+    await client.contacts.block([conversation.peerAddress]);
+    setShowPopup(false);
+    await client.contacts.refreshConsentList();
+    console.log("blocked");
+  };
   const startMessageStream = async () => {
     let stream = await conversation.streamMessages();
     for await (const message of stream) {
@@ -121,6 +165,25 @@ export const MessageContainer = ({
             })}
             <div ref={messagesEndRef} />
           </ul>
+          {isConsent && showPopup ? (
+            <div style={styles.popup}>
+              <h4 style={styles.popupTitle}>Do you trust this contact?</h4>
+              <div style={styles.popupInner}>
+                <button
+                  style={{ ...styles.popupButton, ...styles.acceptButton }}
+                  onClick={handleAccept}
+                >
+                  Accept
+                </button>
+                <button
+                  style={{ ...styles.popupButton, ...styles.blockButton }}
+                  onClick={handleBlock}
+                >
+                  Block
+                </button>
+              </div>
+            </div>
+          ) : null}
           <MessageInput
             onSendMessage={(msg) => {
               handleSendMessage(msg);

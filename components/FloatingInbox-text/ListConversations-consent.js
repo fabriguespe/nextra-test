@@ -6,14 +6,16 @@ export const ListConversations = ({
   selectConversation,
   onConversationFound,
   isPWA = false,
-  isConsent = false,
 }) => {
   const [loading, setLoading] = useState(false);
   const [conversations, setConversations] = useState([]);
+  const [allowedConversations, setAllowedConversations] = useState([]);
+  const [requestConversations, setRequestConversations] = useState([]);
 
   const styles = {
     conversationListItem: {
       display: "flex",
+      width: "100%",
       justifyContent: "space-between",
       alignItems: "center",
       borderBottom: "1px solid #e0e0e0",
@@ -88,46 +90,100 @@ export const ListConversations = ({
 
     fetchAndStreamConversations();
 
+    // Filtering
+
+    const filteredConversations = conversations.filter(
+      (conversation) =>
+        conversation?.peerAddress
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) &&
+        conversation?.peerAddress !== client.address
+    );
+    const allowed = filteredConversations.filter(
+      (conversation) => conversation.consentState === "allowed"
+    );
+    const requests = filteredConversations.filter(
+      (conversation) => conversation.consentState === "unknown"
+    );
+
+    setAllowedConversations(allowed);
+    setRequestConversations(requests);
+
     return () => {
       isMounted = false;
       if (stream) {
         stream.return();
       }
     };
-  }, []);
+  }, [conversations]);
 
-  const filteredConversations = conversations.filter(
-    (conversation) =>
-      conversation?.peerAddress
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) &&
-      conversation?.peerAddress !== client.address
-  );
+  const [activeTab, setActiveTab] = useState("allowed");
+
   return (
     <>
-      {filteredConversations.map((conversation, index) => (
-        <li
-          key={index}
+      {activeTab === "requests" ? (
+        <button
           style={styles.conversationListItem}
-          onClick={() => {
-            selectConversation(conversation);
-          }}
+          onClick={() => setActiveTab("allowed")}
         >
-          <div style={styles.conversationDetails}>
-            <span style={styles.conversationName}>
-              {conversation.peerAddress.substring(0, 6) +
-                "..." +
-                conversation.peerAddress.substring(
-                  conversation.peerAddress.length - 4
-                )}
-            </span>
-            <span style={styles.messagePreview}>...</span>
-          </div>
-          <div style={styles.conversationTimestamp}>
-            {getRelativeTimeLabel(conversation.createdAt)}
-          </div>
-        </li>
-      ))}
+          ← Allowed
+        </button>
+      ) : (
+        <button
+          style={styles.conversationListItem}
+          onClick={() => setActiveTab("requests")}
+        >
+          Requests →
+        </button>
+      )}
+      {(activeTab === "allowed" || !activeTab) &&
+        allowedConversations.map((conversation, index) => (
+          <li
+            key={index}
+            style={styles.conversationListItem}
+            onClick={() => {
+              selectConversation(conversation);
+            }}
+          >
+            <div style={styles.conversationDetails}>
+              <span style={styles.conversationName}>
+                {conversation.peerAddress.substring(0, 6) +
+                  "..." +
+                  conversation.peerAddress.substring(
+                    conversation.peerAddress.length - 4
+                  )}
+              </span>
+              <span style={styles.messagePreview}>...</span>
+            </div>
+            <div style={styles.conversationTimestamp}>
+              {getRelativeTimeLabel(conversation.createdAt)}
+            </div>
+          </li>
+        ))}
+      {activeTab === "requests" &&
+        requestConversations.map((conversation, index) => (
+          <li
+            key={index}
+            style={styles.conversationListItem}
+            onClick={() => {
+              selectConversation(conversation);
+            }}
+          >
+            <div style={styles.conversationDetails}>
+              <span style={styles.conversationName}>
+                {conversation.peerAddress.substring(0, 6) +
+                  "..." +
+                  conversation.peerAddress.substring(
+                    conversation.peerAddress.length - 4
+                  )}
+              </span>
+              <span style={styles.messagePreview}>...</span>
+            </div>
+            <div style={styles.conversationTimestamp}>
+              {getRelativeTimeLabel(conversation.createdAt)}
+            </div>
+          </li>
+        ))}
     </>
   );
 };
