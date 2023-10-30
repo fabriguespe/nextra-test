@@ -123,14 +123,20 @@ export const ListConversations = ({
     <>
       {activeTab === "requests" ? (
         <button
-          style={styles.conversationListItem}
+          style={{
+            ...styles.conversationListItem,
+            backgroundColor: "lightgreen",
+          }}
           onClick={() => setActiveTab("allowed")}
         >
           ← Allowed
         </button>
       ) : (
         <button
-          style={styles.conversationListItem}
+          style={{
+            ...styles.conversationListItem,
+            backgroundColor: "orange",
+          }}
           onClick={() => setActiveTab("requests")}
         >
           Requests →

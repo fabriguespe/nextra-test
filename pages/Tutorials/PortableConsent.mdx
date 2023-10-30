@@ -1,71 +1,150 @@
 import { FloatingInbox } from "/components/FloatingInbox-text";
 
-# Understanding and Building Portable Consent in XMTP
+# How to Add Consent to an Existing XMTP App
 
-Portable consent is an essential feature in XMTP that empowers users to manage who can send them messages. This comprehensive guide walks you through how to enable, manage, and synchronize this feature using the XMTP SDK's Contacts class.
+Managing user consent is essential for enhancing privacy and user experience. If you already have an XMTP application, integrating portable consent features becomes crucial. This guide walks you through adding the consent logic to your existing XMTP app.
+
+**Before**: This is an example without consent. The inbox displays all conversations, regardless of consent state. Including spam.
 
 <div className="widget-container" style={{ padding: "0px", height: "400px" }}>
+  <FloatingInbox env="production" isContained={true} isConsent={false} />
   <FloatingInbox env="production" isContained={true} isConsent={true} />
 </div>
 
-### Enabling Portable Consent
+### Initialize XMTP Client with Consent
 
-To kick off, initialize your XMTP client and enable the `enableConsentList` option.
+Here's your existing `initXmtp` function, updated to include the consent refresh logic.
 
 ```jsx
-import { Client } from "@xmtp/xmtp-js";
-import { Wallet } from "ethers";
-const wallet = Wallet.createRandom();
-const client = await Client.create(wallet, { enableConsentList: true });
+const initXmtpWithKeys = async function () {
+  // ... previous code
+  const xmtp = await Client.create(wallet);
+
+  // Add these lines to refresh the consent list
+  if (isConsent) {
+    await xmtp.contacts.refreshConsentList();
+  }
+};
 ```
 
-### Block or Allow Contacts
+### Add Consent Logic to the Conversations List
 
-The Contacts class offers methods to block or allow users. The methods accept lists, enabling batch requests.
+Modify your existing `ListConversations` component to incorporate the consent logic. This involves some additional state variables, filtering mechanisms, and UI elements.
 
 ```jsx
-client.contacts.allow([wantedConvo.peerAddress, wantedConvo.peerAddress]);
-client.contacts.block([spamConvo.peerAddress, unwantedConvo.peerAddress]);
+// Initialize state variables for consent
+const [allowedConversations, setAllowedConversations] = useState([]);
+const [requestConversations, setRequestConversations] = useState([]);
+
+// ...existing code
+
+useEffect(() => {
+  // ...existing code
+
+  // Filtering based on consent state
+  const allowed = filteredConversations.filter(
+    (conversation) => conversation.consentState === "allowed"
+  );
+  const requests = filteredConversations.filter(
+    (conversation) => conversation.consentState === "unknown"
+  );
+
+  setAllowedConversations(allowed);
+  setRequestConversations(requests);
+
+  // ...existing code
+}, [conversations]);
+
+// Toggle tabs for allowed and requests
+const [activeTab, setActiveTab] = useState("allowed");
 ```
 
-### Refreshing the Consent List
+### Rendering Conversations Based on Consent
 
-To make sure you are using the most up-to-date consent state, refresh the consent list from the network.
-
-```jsx
-client.contacts.refreshConsentList();
-```
-
-### Checking Consent Status
-
-Use the following methods to check if a contact is blocked or allowed.
+To render the conversations according to the active tab (allowed or request), include the following code block within your existing component.
 
 ```jsx
-client.contacts.isAllowed(wantedConvo.peerAddress);
-client.contacts.isBlocked(spamConvo.peerAddress);
-```
-
-### Consent State in Conversations
-
-When dealing with a list of conversations, it's useful to consider their consent state. You can directly fetch the `consentState` from the conversation object.
-
-```jsx
-const state = await conversation.consentState();
-if (state === "blocked") {
-  // hide the conversation
+{
+  activeTab === "requests" ? (
+    <button
+      style={styles.conversationListItem}
+      onClick={() => setActiveTab("allowed")}
+    >
+      ← Allowed
+    </button>
+  ) : (
+    <button
+      style={styles.conversationListItem}
+      onClick={() => setActiveTab("requests")}
+    >
+      Requests →
+    </button>
+  );
 }
 ```
 
-This tutorial will guide you on how to create a simple `Subscribe` that enables the user to subscribe to your messages or notifications.
+### Integrate Popup, Allow and Block Actions
 
-### Synchronization Rules
+Implement the popup actions like allow and block.
 
-It's crucial that your app only alters the consent state on the network when one of the following actions is explicitly performed:
+```jsx
+// Inside your MessageContainer component
+const [showPopup, setShowPopup] = useState(
+  conversation.consentState === "unknown"
+);
 
-1. A contact is blocked: Update the consent state to 'blocked'.
-2. A contact is allowed: Update the consent state to 'allowed'.
-3. The first response is sent to an unknown contact: Update the consent state from 'unknown' to 'allowed'.
+// Function to handle the acceptance of a contact
+const handleAccept = async () => {
+  // Allow the contact
+  await client.contacts.allow([conversation.peerAddress]);
+  // Hide the popup
+  setShowPopup(false);
+  // Refresh the consent list
+  await client.contacts.refreshConsentList();
+  // Log the acceptance
+  console.log("accepted", conversation.peerAddress);
+};
+
+// Function to handle the blocking of a contact
+const handleBlock = async () => {
+  // Block the contact
+  await client.contacts.block([conversation.peerAddress]);
+  // Hide the popup
+  setShowPopup(false);
+  // Refresh the consent list
+  await client.contacts.refreshConsentList();
+  // Log the blocking
+  console.log("blocked", conversation.peerAddress);
+};
+```
+
+Render the popup
+
+```jsx
+// Add the following inside your component's return statement
+{
+  isConsent && showPopup ? (
+    <div style={styles.popup}>
+      <h4 style={styles.popupTitle}>Do you trust this contact?</h4>
+      <div style={styles.popupInner}>
+        <button
+          style={{ ...styles.popupButton, ...styles.acceptButton }}
+          onClick={handleAccept}
+        >
+          Accept
+        </button>
+        <button
+          style={{ ...styles.popupButton, ...styles.blockButton }}
+          onClick={handleBlock}
+        >
+          Block
+        </button>
+      </div>
+    </div>
+  ) : null;
+}
+```
 
 ### Conclusion
 
-Portable consent in XMTP enables users to have granular control over who can message them. By following this guide, you can efficiently implement and manage this feature in your application.
+By following these steps, you'll successfully integrate portable consent into your existing XMTP application. This enables users to have better control over who can send them messages, enhancing user privacy and experience.

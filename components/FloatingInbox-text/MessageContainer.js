@@ -98,18 +98,28 @@ export const MessageContainer = ({
     fetchMessages();
   }, [conversation]);
 
+  // Function to handle the acceptance of a contact
   const handleAccept = async () => {
+    // Allow the contact
     await client.contacts.allow([conversation.peerAddress]);
+    // Hide the popup
     setShowPopup(false);
+    // Refresh the consent list
     await client.contacts.refreshConsentList();
-    console.log("accepted");
+    // Log the acceptance
+    console.log("accepted", conversation.peerAddress);
   };
 
+  // Function to handle the blocking of a contact
   const handleBlock = async () => {
+    // Block the contact
     await client.contacts.block([conversation.peerAddress]);
+    // Hide the popup
     setShowPopup(false);
+    // Refresh the consent list
     await client.contacts.refreshConsentList();
-    console.log("blocked");
+    // Log the blocking
+    console.log("blocked", conversation.peerAddress);
   };
   const startMessageStream = async () => {
     let stream = await conversation.streamMessages();

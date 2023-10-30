@@ -140,7 +140,7 @@ export function FloatingInbox({
     if (client && !isOnNetwork) {
       setIsOnNetwork(true);
     }
-    if (signer && isOnNetwork) {
+    if (signer && isOnNetwork && isConnected) {
       initXmtpWithKeys();
     }
   }, [wallet, isOnNetwork, isConnected]);
@@ -245,8 +245,8 @@ export function FloatingInbox({
       ...clientOptions,
       privateKeyOverride: keys,
       useSnap: true,
+      //Cosent enabled by default
     });
-    console.log("xmtp", xmtp);
     setClient(xmtp);
     setIsOnNetwork(!!xmtp.address);
     if (isConsent) {
