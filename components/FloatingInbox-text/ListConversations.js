@@ -1,20 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  useConversations,
-  useStreamConversations,
-  useClient,
-} from "@xmtp/react-sdk";
 
 export const ListConversations = ({
   searchTerm,
+  client,
   selectConversation,
   onConversationFound,
   isPWA = false,
   isConsent = false,
 }) => {
-  const { client } = useClient();
-  const { conversations } = useConversations();
-  const [streamedConversations, setStreamedConversations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [conversations, setConversations] = useState([]);
 
   const styles = {
     conversationListItem: {
@@ -60,6 +55,47 @@ export const ListConversations = ({
     },
   };
 
+  useEffect(() => {
+    let isMounted = true;
+    let stream;
+    const fetchAndStreamConversations = async () => {
+      setLoading(true);
+      const allConversations = await client.conversations.list();
+
+      const sortedConversations = allConversations.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+      if (isMounted) {
+        setConversations(sortedConversations);
+      }
+      setLoading(false);
+      stream = await client.conversations.stream();
+      for await (const conversation of stream) {
+        console.log(
+          `New conversation started with ${conversation.peerAddress}`
+        );
+        if (isMounted) {
+          setConversations((prevConversations) => {
+            const newConversations = [...prevConversations, conversation];
+            return newConversations.sort(
+              (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+            );
+          });
+        }
+        break;
+      }
+    };
+
+    fetchAndStreamConversations();
+
+    return () => {
+      isMounted = false;
+      if (stream) {
+        stream.return();
+      }
+    };
+  }, []);
+
   const filteredConversations = conversations.filter(
     (conversation) =>
       conversation?.peerAddress
@@ -67,18 +103,6 @@ export const ListConversations = ({
         .includes(searchTerm.toLowerCase()) &&
       conversation?.peerAddress !== client.address
   );
-
-  useEffect(() => {
-    if (filteredConversations.length > 0) {
-      onConversationFound(true);
-    }
-  }, [filteredConversations, onConversationFound]);
-  const onConversation = useCallback((conversation) => {
-    setStreamedConversations((prev) => [...prev, conversation]);
-  }, []);
-
-  const { error } = useStreamConversations(onConversation);
-
   return (
     <>
       {filteredConversations.map((conversation, index) => (

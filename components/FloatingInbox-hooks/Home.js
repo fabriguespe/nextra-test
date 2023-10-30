@@ -3,14 +3,24 @@ import { ethers } from "ethers";
 import { Client, useClient } from "@xmtp/react-sdk";
 import { ConversationContainer } from "./ConversationContainer";
 
-export default function Home({ wallet, env, isPWA = false, onLogout }) {
+export default function Home({
+  wallet,
+  env,
+  isPWA = false,
+  onLogout,
+  isContained = false,
+  isConsent = false,
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnNetwork, setIsOnNetwork] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
     const initialIsOpen =
-      isPWA || localStorage.getItem("isWidgetOpen") === "true" || false;
+      isPWA ||
+      isContained ||
+      localStorage.getItem("isWidgetOpen") === "true" ||
+      false;
     const initialIsOnNetwork =
       localStorage.getItem("isOnNetwork") === "true" || false;
     const initialIsConnected =
@@ -21,7 +31,7 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
     setIsConnected(initialIsConnected);
   }, []);
 
-  const { client, error, isLoading, initialize } = useClient();
+  const { client, error, isLoading, initialize, disconnect } = useClient();
   const [loading, setLoading] = useState(false);
 
   const [selectedConversation, setSelectedConversation] = useState(null);
@@ -45,14 +55,14 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
       padding: "5px",
     },
     uContainer: {
-      position: isPWA == true ? "relative" : "fixed",
-      bottom: isPWA == true ? "0px" : "70px",
-      right: isPWA == true ? "0px" : "20px",
-      width: isPWA == true ? "100%" : "300px",
-      height: isPWA == true ? "100vh" : "400px",
-      border: isPWA == true ? "0px" : "1px solid #ccc",
+      position: isContained ? "relative" : isPWA ? "relative" : "fixed",
+      bottom: isContained ? "0px" : isPWA ? "0px" : "70px",
+      right: isContained ? "0px" : isPWA ? "0px" : "20px",
+      width: isContained ? "100%" : isPWA ? "100%" : "300px",
+      height: isContained ? "100%" : isPWA ? "100vh" : "400px",
+      border: isContained ? "0px" : isPWA ? "0px" : "1px solid #ccc",
       backgroundColor: "#f9f9f9",
-      borderRadius: isPWA == true ? "0px" : "10px",
+      borderRadius: isContained ? "0px" : isPWA ? "0px" : "10px",
       zIndex: "1000",
       overflow: "hidden",
       display: "flex",
@@ -71,6 +81,13 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
     },
     widgetHeader: {
       padding: "2px",
+    },
+    label: {
+      fontSize: "10px",
+      textAlign: "center",
+      marginTop: "5px",
+      cursor: "pointer",
+      display: "block",
     },
     conversationHeader: {
       display: "flex",
@@ -99,6 +116,7 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
     xmtpContainer: {
       display: "flex",
       justifyContent: "center",
+      flexDirection: "column",
       alignItems: "center",
       height: "100%",
     },
@@ -124,7 +142,6 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
 
   useEffect(() => {
     if (wallet) {
-      console.log(wallet);
       setSigner(wallet);
       setIsConnected(true);
     }
@@ -141,8 +158,9 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
       try {
         await window.ethereum.enable();
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        setSigner(provider.getSigner());
-        console.log(provider.getSigner());
+        const signer = provider.getSigner();
+        setSigner(signer);
+        console.log("Your address", signer.address);
         setIsConnected(true);
       } catch (error) {
         console.error("User rejected request", error);
@@ -167,11 +185,17 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
       console.log(e);
     }
   };
+  const [isWalletCreated, setIsWalletCreated] = useState(false);
 
+  const createNewWallet = async () => {
+    const newWallet = ethers.Wallet.createRandom();
+    console.log("Your address", newWallet.address);
+    setSigner(newWallet);
+    setIsConnected(true);
+    setIsWalletCreated(true); // Set isWalletCreated to true when a new wallet is created
+  };
   const initXmtpWithKeys = async () => {
-    const options = {
-      env: env ? env : getEnv(),
-    };
+    const options = { env: env ? env : getEnv() };
     const address = await getAddress(signer);
     if (!address) return;
     let keys = loadKeys(address);
@@ -205,8 +229,10 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
     setIsConnected(false);
     const address = await getAddress(signer);
     wipeKeys(address);
+    console.log("wipe", address);
     setSigner(null);
     setIsOnNetwork(false);
+    await disconnect();
     setSelectedConversation(null);
     localStorage.removeItem("isOnNetwork");
     localStorage.removeItem("isConnected");
@@ -217,16 +243,18 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
 
   return (
     <>
-      <div
-        onClick={isOpen ? closeWidget : openWidget}
-        className={
-          "FloatingInbox " +
-          (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
-        }
-        style={styles.FloatingLogo}
-      >
-        💬
-      </div>
+      {!isPWA && !isContained && (
+        <div
+          onClick={isOpen ? closeWidget : openWidget}
+          className={
+            "FloatingInbox " +
+            (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
+          }
+          style={styles.FloatingLogo}
+        >
+          💬
+        </div>
+      )}
       {isOpen && (
         <div
           style={styles.uContainer}
@@ -261,6 +289,9 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
                 <button style={styles.btnXmtp} onClick={connectWallet}>
                   Connect Wallet
                 </button>
+                <button style={styles.label} onClick={createNewWallet}>
+                  or create new one
+                </button>
               </div>
             )}
             {isConnected && !isOnNetwork && (
@@ -268,12 +299,18 @@ export default function Home({ wallet, env, isPWA = false, onLogout }) {
                 <button style={styles.btnXmtp} onClick={initXmtpWithKeys}>
                   Connect to XMTP
                 </button>
+                {isWalletCreated && (
+                  <button style={styles.label}>
+                    Your addess: {signer.address}
+                  </button>
+                )}
               </div>
             )}
             {isConnected && isOnNetwork && client && (
               <ConversationContainer
                 isPWA={isPWA}
-                client={client}
+                isConsent={isConsent}
+                isContained={isContained}
                 selectedConversation={selectedConversation}
                 setSelectedConversation={setSelectedConversation}
               />

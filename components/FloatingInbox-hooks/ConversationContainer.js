@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { MessageContainer } from "./MessageContainer";
-import { useCanMessage } from "@xmtp/react-sdk";
+import { useCanMessage, useClient } from "@xmtp/react-sdk";
 import { ListConversations } from "./ListConversations";
 import { ethers } from "ethers";
 import { NewConversation } from "./NewConversation";
 
 export const ConversationContainer = ({
-  client,
   selectedConversation,
   setSelectedConversation,
   isPWA = false,
+  isConsent = false,
+  isContained = false,
 }) => {
+  const { client } = useClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [peerAddress, setPeerAddress] = useState("");
   const [message, setMessage] = useState("");
@@ -127,9 +129,9 @@ export const ConversationContainer = ({
           {loadingResolve && searchTerm && <small>Resolving address...</small>}
           <ListConversations
             isPWA={isPWA}
+            isConsent={isConsent}
             searchTerm={searchTerm}
             selectConversation={setSelectedConversation}
-            client={client}
             onConversationFound={(state) => {
               setConversationFound(state);
               if (state == true) setCreateNew(false);
@@ -142,7 +144,8 @@ export const ConversationContainer = ({
                 style={styles.createNewButton}
                 onClick={() => {
                   setSelectedConversation({ messages: [] });
-                }}>
+                }}
+              >
                 Create new conversation
               </button>
             </>
@@ -154,7 +157,7 @@ export const ConversationContainer = ({
           {selectedConversation.id ? (
             <MessageContainer
               isPWA={isPWA}
-              client={client}
+              isContained={isContained}
               conversation={selectedConversation}
             />
           ) : (

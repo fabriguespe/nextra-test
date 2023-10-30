@@ -17,6 +17,7 @@ bun start
 - [Broadcast a message to multiple wallets](https://xmtp-prototypes.vercel.app/Tutorials/Broadcast)
 - [Create a Floating Inbox widget with XMTP](https://xmtp-prototypes.vercel.app/Tutorials/FloatingInbox)
 - [How to Create an ENS + XMTP Contact Page in React](https://xmtp-prototypes.vercel.app/Tutorials/ContactPage)
+- [Understanding and Building Portable Consent in XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
 
 ### Widgets
 

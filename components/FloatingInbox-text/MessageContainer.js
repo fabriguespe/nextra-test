@@ -6,6 +6,7 @@ export const MessageContainer = ({
   conversation,
   client,
   searchTerm,
+  isContained = false,
   selectConversation,
 }) => {
   const isFirstLoad = useRef(true);
@@ -36,7 +37,7 @@ export const MessageContainer = ({
 
   const updateMessages = (prevMessages, newMessage) => {
     const doesMessageExist = prevMessages.some(
-      (existingMessage) => existingMessage.id === newMessage.id,
+      (existingMessage) => existingMessage.id === newMessage.id
     );
 
     if (!doesMessageExist) {
@@ -83,7 +84,8 @@ export const MessageContainer = ({
   }, [conversation]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!isContained)
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSendMessage = async (newMessage) => {

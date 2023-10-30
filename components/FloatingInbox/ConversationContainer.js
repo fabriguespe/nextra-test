@@ -89,7 +89,7 @@ export const ConversationContainer = ({
       const allConversations = await client.conversations.list();
 
       const sortedConversations = allConversations.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       if (isMounted) {
         setConversations(sortedConversations);
@@ -99,13 +99,13 @@ export const ConversationContainer = ({
       stream = await client.conversations.stream();
       for await (const conversation of stream) {
         console.log(
-          `New conversation started with ${conversation.peerAddress}`,
+          `New conversation started with ${conversation.peerAddress}`
         );
         if (isMounted) {
           setConversations((prevConversations) => {
             const newConversations = [...prevConversations, conversation];
             return newConversations.sort(
-              (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
+              (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             );
           });
         }
@@ -127,34 +127,10 @@ export const ConversationContainer = ({
       conversation?.peerAddress
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) &&
-      conversation?.peerAddress !== client.address,
+      conversation?.peerAddress !== client.address
   );
   const selectConversation = async (conversation) => {
     setSelectedConversation(conversation);
-  };
-
-  const getRelativeTimeLabel = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-
-    const diff = now.getTime() - date.getTime();
-    const diffSeconds = Math.floor(diff / 1000);
-    const diffMinutes = Math.floor(diff / 1000 / 60);
-    const diffHours = Math.floor(diff / 1000 / 60 / 60);
-    const diffDays = Math.floor(diff / 1000 / 60 / 60 / 24);
-    const diffWeeks = Math.floor(diff / 1000 / 60 / 60 / 24 / 7);
-
-    if (diffSeconds < 60) {
-      return "now";
-    } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-    } else {
-      return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
-    }
   };
 
   const isValidEthereumAddress = (address) => {
@@ -231,13 +207,14 @@ export const ConversationContainer = ({
                 onClick={() => {
                   selectConversation(conversation);
                 }}
-                style={styles.conversationListItem}>
+                style={styles.conversationListItem}
+              >
                 <div style={styles.conversationDetails}>
                   <span style={styles.conversationName}>
                     {conversation.peerAddress.substring(0, 6) +
                       "..." +
                       conversation.peerAddress.substring(
-                        conversation.peerAddress.length - 4,
+                        conversation.peerAddress.length - 4
                       )}
                   </span>
                   <span style={styles.messagePreview}>...</span>
@@ -255,7 +232,8 @@ export const ConversationContainer = ({
                   onClick={() => {
                     setSelectedConversation({ messages: [] });
                   }}
-                  style={styles.createNewButton}>
+                  style={styles.createNewButton}
+                >
                   Create new conversation
                 </button>
               )}
@@ -273,4 +251,18 @@ export const ConversationContainer = ({
       )}
     </div>
   );
+};
+
+const getRelativeTimeLabel = (dateString) => {
+  const diff = new Date() - new Date(dateString);
+  const diffMinutes = Math.floor(diff / 1000 / 60);
+  const diffHours = Math.floor(diff / 1000 / 60 / 60);
+  const diffDays = Math.floor(diff / 1000 / 60 / 60 / 24);
+  const diffWeeks = Math.floor(diff / 1000 / 60 / 60 / 24 / 7);
+
+  if (diffMinutes < 60)
+    return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
 };

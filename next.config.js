@@ -3,4 +3,12 @@ const withNextra = require("nextra")({
   themeConfig: "./theme.config.tsx",
 });
 
-module.exports = withNextra();
+module.exports = withNextra({
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    config.experiments = {
+      asyncWebAssembly: true,
+    };
+
+    return config;
+  },
+});

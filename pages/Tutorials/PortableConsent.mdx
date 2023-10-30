@@ -1,0 +1,71 @@
+import { FloatingInbox } from "/components/FloatingInbox-text";
+
+# Understanding and Building Portable Consent in XMTP
+
+Portable consent is an essential feature in XMTP that empowers users to manage who can send them messages. This comprehensive guide walks you through how to enable, manage, and synchronize this feature using the XMTP SDK's Contacts class.
+
+<div className="widget-container" style={{ padding: "0px", height: "400px" }}>
+  <FloatingInbox env="production" isContained={true} isConsent={false} />
+</div>
+
+### Enabling Portable Consent
+
+To kick off, initialize your XMTP client and enable the `enableConsentList` option.
+
+```jsx
+import { Client } from "@xmtp/xmtp-js";
+import { Wallet } from "ethers";
+const wallet = Wallet.createRandom();
+const client = await Client.create(wallet, { enableConsentList: true });
+```
+
+### Block or Allow Contacts
+
+The Contacts class offers methods to block or allow users. The methods accept lists, enabling batch requests.
+
+```jsx
+client.contacts.allow([wantedConvo.peerAddress, wantedConvo.peerAddress]);
+client.contacts.block([spamConvo.peerAddress, unwantedConvo.peerAddress]);
+```
+
+### Refreshing the Consent List
+
+To make sure you are using the most up-to-date consent state, refresh the consent list from the network.
+
+```jsx
+client.contacts.refreshConsentList();
+```
+
+### Checking Consent Status
+
+Use the following methods to check if a contact is blocked or allowed.
+
+```jsx
+client.contacts.isAllowed(wantedConvo.peerAddress);
+client.contacts.isBlocked(spamConvo.peerAddress);
+```
+
+### Consent State in Conversations
+
+When dealing with a list of conversations, it's useful to consider their consent state. You can directly fetch the `consentState` from the conversation object.
+
+```jsx
+const state = await conversation.consentState();
+if (state === "blocked") {
+  // hide the conversation
+}
+```
+
+This tutorial will guide you on how to create a simple `Subscribe` that enables the user to subscribe to your messages or notifications.
+
+### Synchronization Rules
+
+It's crucial that your app only alters the consent state on the network when one of the following actions is explicitly performed:
+
+1. A contact is blocked: Update the consent state to 'blocked'.
+2. A contact is allowed: Update the consent state to 'allowed'.
+3. The first response is sent to an unknown contact: Update the consent state from 'unknown' to 'allowed'.
+
+### Conclusion
+
+Portable consent in XMTP enables users to have granular control over who can message them. By following this guide, you can efficiently implement and manage this feature in your application.

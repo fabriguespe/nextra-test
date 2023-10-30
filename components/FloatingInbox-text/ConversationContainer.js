@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { MessageContainer } from "./MessageContainer";
+import { ListConversations } from "./ListConversations";
 
 export const ConversationContainer = ({
   client,
   selectedConversation,
   setSelectedConversation,
+  isContained = false,
+  isPWA = false,
+  isConsent = false,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [peerAddress, setPeerAddress] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingResolve, setLoadingResolve] = useState(false);
-
   const [canMessage, setCanMessage] = useState(false);
-  const [conversations, setConversations] = useState([]);
   const styles = {
     conversations: {
       height: "100%",
@@ -79,80 +81,10 @@ export const ConversationContainer = ({
     },
   };
 
-  useEffect(() => {
-    let isMounted = true;
-    let stream;
-    const fetchAndStreamConversations = async () => {
-      setLoading(true);
-      const allConversations = await client.conversations.list();
-
-      const sortedConversations = allConversations.sort(
-        (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-      );
-      if (isMounted) {
-        setConversations(sortedConversations);
-      }
-      setLoading(false);
-      stream = await client.conversations.stream();
-      for await (const conversation of stream) {
-        console.log(
-          `New conversation started with ${conversation.peerAddress}`,
-        );
-        if (isMounted) {
-          setConversations((prevConversations) => {
-            const newConversations = [...prevConversations, conversation];
-            return newConversations.sort(
-              (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
-            );
-          });
-        }
-        break;
-      }
-    };
-
-    fetchAndStreamConversations();
-
-    return () => {
-      isMounted = false;
-      if (stream) {
-        stream.return();
-      }
-    };
-  }, []);
-  const filteredConversations = conversations.filter(
-    (conversation) =>
-      conversation?.peerAddress
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase()) &&
-      conversation?.peerAddress !== client.address,
-  );
   const selectConversation = async (conversation) => {
     setSelectedConversation(conversation);
   };
 
-  const getRelativeTimeLabel = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-
-    const diff = now.getTime() - date.getTime();
-    const diffSeconds = Math.floor(diff / 1000);
-    const diffMinutes = Math.floor(diff / 1000 / 60);
-    const diffHours = Math.floor(diff / 1000 / 60 / 60);
-    const diffDays = Math.floor(diff / 1000 / 60 / 60 / 24);
-    const diffWeeks = Math.floor(diff / 1000 / 60 / 60 / 24 / 7);
-
-    if (diffSeconds < 60) {
-      return "now";
-    } else if (diffMinutes < 60) {
-      return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-    } else {
-      return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
-    }
-  };
   const isValidEthereumAddress = (address) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
   };
@@ -176,7 +108,6 @@ export const ConversationContainer = ({
         setLoadingResolve(false);
       }
     }
-    console.log("resolvedAddress", resolvedAddress);
     if (resolvedAddress && isValidEthereumAddress(resolvedAddress)) {
       processEthereumAddress(resolvedAddress);
       setSearchTerm(resolvedAddress); // <-- Add this line
@@ -220,48 +151,34 @@ export const ConversationContainer = ({
             style={styles.peerAddressInput}
           />
           {loadingResolve && searchTerm && <small>Resolving address...</small>}
-          {filteredConversations.length > 0 ? (
-            filteredConversations.map((conversation, index) => (
-              <li
-                key={index}
-                style={styles.conversationListItem}
-                onClick={() => {
-                  selectConversation(conversation);
-                }}>
-                <div style={styles.conversationDetails}>
-                  <span style={styles.conversationName}>
-                    {conversation.peerAddress.substring(0, 6) +
-                      "..." +
-                      conversation.peerAddress.substring(
-                        conversation.peerAddress.length - 4,
-                      )}
-                  </span>
-                  <span style={styles.messagePreview}>...</span>
-                </div>
-                <div style={styles.conversationTimestamp}>
-                  {getRelativeTimeLabel(conversation.createdAt)}
-                </div>
-              </li>
-            ))
-          ) : (
-            <>
-              {message && <small>{message}</small>}
-              {peerAddress && canMessage && (
-                <button
-                  style={styles.createNewButton}
-                  onClick={() => {
-                    setSelectedConversation({ messages: [] });
-                  }}>
-                  Create new conversation
-                </button>
-              )}
-            </>
+          <ListConversations
+            isPWA={isPWA}
+            isConsent={isConsent}
+            client={client}
+            searchTerm={searchTerm}
+            selectConversation={setSelectedConversation}
+            onConversationFound={(state) => {
+              setConversationFound(state);
+              if (state == true) setCreateNew(false);
+            }}
+          />
+          {message && <small>{message}</small>}
+          {peerAddress && canMessage && (
+            <button
+              style={styles.createNewButton}
+              onClick={() => {
+                setSelectedConversation({ messages: [] });
+              }}
+            >
+              Create new conversation
+            </button>
           )}
         </ul>
       )}
       {selectedConversation && (
         <MessageContainer
           client={client}
+          isContained={isContained}
           conversation={selectedConversation}
           searchTerm={searchTerm}
           selectConversation={selectConversation}
@@ -269,4 +186,18 @@ export const ConversationContainer = ({
       )}
     </div>
   );
+};
+
+const getRelativeTimeLabel = (dateString) => {
+  const diff = new Date() - new Date(dateString);
+  const diffMinutes = Math.floor(diff / 1000 / 60);
+  const diffHours = Math.floor(diff / 1000 / 60 / 60);
+  const diffDays = Math.floor(diff / 1000 / 60 / 60 / 24);
+  const diffWeeks = Math.floor(diff / 1000 / 60 / 60 / 24 / 7);
+
+  if (diffMinutes < 60)
+    return `${diffMinutes} minute${diffMinutes > 1 ? "s" : ""} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+  if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+  return `${diffWeeks} week${diffWeeks > 1 ? "s" : ""} ago`;
 };
