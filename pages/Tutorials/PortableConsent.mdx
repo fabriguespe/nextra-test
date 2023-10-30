@@ -4,12 +4,25 @@ import { FloatingInbox } from "/components/FloatingInbox-text";
 
 Managing user consent is essential for enhancing privacy and user experience. If you already have an XMTP application, integrating portable consent features becomes crucial. This guide walks you through adding the consent logic to your existing XMTP app.
 
-**Before**: This is an example without consent. The inbox displays all conversations, regardless of consent state. Including spam.
+---
+
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-evenly",
+    textAlign: "center",
+  }}
+>
+  <h3 style={{ width: "50%" }}>**Without Consent**</h3>
+  <h3 style={{ width: "50%" }}>**With Consent**</h3>
+</div>
 
 <div className="widget-container" style={{ padding: "0px", height: "400px" }}>
   <FloatingInbox env="production" isContained={true} isConsent={false} />
   <FloatingInbox env="production" isContained={true} isConsent={true} />
 </div>
+
+---
 
 ### Initialize XMTP Client with Consent
 
