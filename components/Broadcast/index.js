@@ -3,8 +3,6 @@ import { Client } from "@xmtp/react-sdk";
 import { ethers } from "ethers";
 
 export function Broadcast({
-  theme = "default",
-  size = "medium",
   title = "Broadcast Message",
   wallet,
   walletAddresses = [],
@@ -30,9 +28,6 @@ export function Broadcast({
     },
     ubContainer: {
       position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
       background: "white",
       border: "1px solid #ccc",
       borderRadius: "5px",
@@ -77,11 +72,10 @@ export function Broadcast({
       textAlign: "center",
       cursor: "pointer",
       transition: "background-color 0.3s ease",
-      color: theme === "dark" ? "#ffffff" : "#333333",
-      backgroundColor:
-        theme === "dark" ? "#333333" : theme === "light" ? "#fff" : "#ededed",
-      border: theme === "light" ? "1px solid #333333" : "none",
-      fontSize: size === "large" ? "16px" : "12px",
+      color: "#333333",
+      backgroundColor: "#ededed",
+      border: "none",
+      fontSize: "12px",
     },
     textArea: {
       width: "100%",
@@ -102,7 +96,25 @@ export function Broadcast({
       fontSize: "12px",
       cursor: "pointer",
     },
+    textArea2: {
+      width: "100%",
+      display: "block",
+      fontSize: "12px",
+      textAlign: "center",
+      marginTop: "20px",
+      marginBottom: "20px",
+      rows: "10",
+    },
+    styledBadged: {
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: "10px",
+      width: "50%",
+    },
   };
+
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
@@ -158,23 +170,46 @@ export function Broadcast({
       }, 3000);
     } catch (error) {
       console.log(error);
+      alert(error);
       setLoading(false);
     }
   };
 
+  const [walletAddressesInput, setWalletAddressesInput] = useState(
+    walletAddresses.join("\n ")
+  );
+  const [walletAddressesState, setWalletAddressesState] = useState(
+    walletAddressesInput.split(", ")
+  );
   const handleOpenPopup = () => {
+    setWalletAddressesState(walletAddressesInput.split(", "));
     setShowPopup(!showPopup);
+  };
+  const handleWalletAddressesInputChange = (event) => {
+    const newAddresses = event.target.value;
+    setWalletAddressesInput(newAddresses);
+    setWalletAddressesState(newAddresses.split(", "));
   };
 
   return (
     <>
-      <button
-        className="Broadcast"
-        style={styles.ubButton}
-        onClick={handleOpenPopup}
-      >
-        Send Message
-      </button>
+      <div style={styles.styledBadged}>
+        <small>Addresses:</small>
+        <textarea
+          style={styles.textArea2}
+          rows="5"
+          value={walletAddressesInput}
+          onChange={handleWalletAddressesInputChange}
+          placeholder="Enter wallet addresses here, separated by commas"
+        />
+        <button
+          className="Broadcast"
+          style={styles.ubButton}
+          onClick={handleOpenPopup}
+        >
+          Send Message
+        </button>
+      </div>
       {showPopup && (
         <div
           style={styles.ubContainer}
@@ -186,7 +221,7 @@ export function Broadcast({
           </button>
           <div style={styles.toLabel}>
             To:
-            {walletAddresses.map((address, index) => (
+            {walletAddressesState.map((address, index) => (
               <span key={index} style={styles.toAddress}>
                 {address}
               </span>

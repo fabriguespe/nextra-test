@@ -21,6 +21,7 @@ export const ListConversations = ({
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      border: "0px",
       borderBottom: "1px solid #e0e0e0",
       cursor: "pointer",
       backgroundColor: "#f0f0f0",
@@ -73,6 +74,7 @@ export const ListConversations = ({
       onConversationFound(true);
     }
   }, [filteredConversations, onConversationFound]);
+
   const onConversation = useCallback((conversation) => {
     setStreamedConversations((prev) => [...prev, conversation]);
   }, []);

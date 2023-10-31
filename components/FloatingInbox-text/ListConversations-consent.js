@@ -18,6 +18,7 @@ export const ListConversations = ({
       width: "100%",
       justifyContent: "space-between",
       alignItems: "center",
+      border: "0px",
       borderBottom: "1px solid #e0e0e0",
       cursor: "pointer",
       backgroundColor: "#f0f0f0",
@@ -99,6 +100,7 @@ export const ListConversations = ({
           .includes(searchTerm.toLowerCase()) &&
         conversation?.peerAddress !== client.address
     );
+
     const allowed = filteredConversations.filter(
       (conversation) => conversation.consentState === "allowed"
     );
@@ -126,6 +128,8 @@ export const ListConversations = ({
           style={{
             ...styles.conversationListItem,
             backgroundColor: "lightgreen",
+            fontSize: "12px",
+            padding: "5px",
           }}
           onClick={() => setActiveTab("allowed")}
         >
@@ -136,6 +140,8 @@ export const ListConversations = ({
           style={{
             ...styles.conversationListItem,
             backgroundColor: "orange",
+            fontSize: "12px",
+            padding: "5px",
           }}
           onClick={() => setActiveTab("requests")}
         >

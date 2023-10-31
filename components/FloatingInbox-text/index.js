@@ -303,9 +303,9 @@ export function FloatingInbox({
                 <button style={styles.btnXmtp} onClick={connectWallet}>
                   Connect Wallet
                 </button>
-                <button style={styles.label} onClick={createNewWallet}>
+                <div style={styles.label} onClick={createNewWallet}>
                   or create new one
-                </button>
+                </div>
               </div>
             )}
             {isConnected && !isOnNetwork && (

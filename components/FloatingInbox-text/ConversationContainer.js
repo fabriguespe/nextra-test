@@ -18,6 +18,9 @@ export const ConversationContainer = ({
   const [loading, setLoading] = useState(false);
   const [loadingResolve, setLoadingResolve] = useState(false);
   const [canMessage, setCanMessage] = useState(false);
+  const [conversationFound, setConversationFound] = useState(false);
+  const [createNew, setCreateNew] = useState(false);
+
   const styles = {
     conversations: {
       height: "100%",
@@ -32,6 +35,7 @@ export const ConversationContainer = ({
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      border: "0px",
       borderBottom: "1px solid #e0e0e0",
       cursor: "pointer",
       backgroundColor: "#f0f0f0",
@@ -91,6 +95,8 @@ export const ConversationContainer = ({
   };
 
   const handleSearchChange = async (e) => {
+    setCreateNew(false);
+    setConversationFound(false);
     setSearchTerm(e.target.value);
     console.log("handleSearchChange", e.target.value);
     setMessage("Searching...");
@@ -105,17 +111,20 @@ export const ConversationContainer = ({
       } catch (error) {
         console.log(error);
         setMessage("Error resolving address");
+        setCreateNew(false);
       } finally {
         setLoadingResolve(false);
       }
     }
+    console.log("resolvedAddress", resolvedAddress);
     if (resolvedAddress && isValidEthereumAddress(resolvedAddress)) {
       processEthereumAddress(resolvedAddress);
       setSearchTerm(resolvedAddress); // <-- Add this line
     } else {
       setMessage("Invalid Ethereum address");
       setPeerAddress(null);
-      setCanMessage(false);
+      setCreateNew(false);
+      //setCanMessage(false);
     }
   };
 
@@ -123,20 +132,22 @@ export const ConversationContainer = ({
     setPeerAddress(address);
     if (address === client.address) {
       setMessage("No self messaging allowed");
+      setCreateNew(false);
       // setCanMessage(false);
     } else {
       const canMessageStatus = await client?.canMessage(address);
       if (canMessageStatus) {
         setPeerAddress(address);
-        setCanMessage(true);
+        // setCanMessage(true);
         setMessage("Address is on the network ✅");
+        setCreateNew(true);
       } else {
-        setCanMessage(false);
+        //  setCanMessage(false);
         setMessage("Address is not on the network ❌");
+        setCreateNew(false);
       }
     }
   };
-
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -175,7 +186,7 @@ export const ConversationContainer = ({
               }}
             />
           )}
-          {message && <small>{message}</small>}
+          {message && conversationFound !== true && <small>{message}</small>}
           {peerAddress && canMessage && (
             <button
               style={styles.createNewButton}

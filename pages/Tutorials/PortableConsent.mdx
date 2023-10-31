@@ -4,13 +4,12 @@ import { FloatingInbox } from "/components/FloatingInbox-text";
 
 Managing user consent is essential for enhancing privacy and user experience. If you already have an XMTP application, integrating portable consent features becomes crucial. This guide walks you through adding the consent logic to your existing XMTP app.
 
----
-
 <div
   style={{
     display: "flex",
     justifyContent: "space-evenly",
     textAlign: "center",
+    marginTop: "20px",
   }}
 >
   <h3 style={{ width: "50%" }}>**Without Consent**</h3>
@@ -22,9 +21,7 @@ Managing user consent is essential for enhancing privacy and user experience. If
   <FloatingInbox env="production" isContained={true} isConsent={true} />
 </div>
 
----
-
-### Initialize XMTP Client with Consent
+#### Initialize XMTP Client with Consent
 
 Here's your existing `initXmtp` function, updated to include the consent refresh logic.
 
@@ -40,7 +37,7 @@ const initXmtpWithKeys = async function () {
 };
 ```
 
-### Add Consent Logic to the Conversations List
+#### Add Consent Logic to the Conversations List
 
 Modify your existing `ListConversations` component to incorporate the consent logic. This involves some additional state variables, filtering mechanisms, and UI elements.
 
@@ -72,7 +69,7 @@ useEffect(() => {
 const [activeTab, setActiveTab] = useState("allowed");
 ```
 
-### Rendering Conversations Based on Consent
+#### Rendering Conversations Based on Consent
 
 To render the conversations according to the active tab (allowed or request), include the following code block within your existing component.
 
@@ -96,7 +93,7 @@ To render the conversations according to the active tab (allowed or request), in
 }
 ```
 
-### Integrate Popup, Allow and Block Actions
+#### Integrate Popup, Allow and Block Actions
 
 Implement the popup actions like allow and block.
 
@@ -158,6 +155,6 @@ Render the popup
 }
 ```
 
-### Conclusion
+#### Conclusion
 
 By following these steps, you'll successfully integrate portable consent into your existing XMTP application. This enables users to have better control over who can send them messages, enhancing user privacy and experience.
