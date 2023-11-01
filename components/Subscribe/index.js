@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Client } from "@xmtp/xmtp-js";
 import { ethers } from "ethers";
-import { send } from "process";
 
 export function Subscribe({
   senderAddress,
