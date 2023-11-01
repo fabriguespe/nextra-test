@@ -30,6 +30,7 @@ export const ConversationContainer = ({
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
+      margin: "0px",
       border: "0px",
       borderBottom: "1px solid #e0e0e0",
       cursor: "pointer",

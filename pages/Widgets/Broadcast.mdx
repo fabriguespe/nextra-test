@@ -22,8 +22,6 @@ This widget enables the user to broadcast messages to one or many specified Ethe
 
 Here are the properties that you can pass to the `Broadcast` component:
 
-- `theme`: Accepts values "default", "dark", or "light". This will set the theme of the broadcast component.
-- `size`: Accepts values "small", "medium", or "large". This will set the size of the broadcast component.
 - `placeholderMessage`: (Optional) A string for placeholder text in the message input (e.g., "Enter your marketing message here").
 - `walletAddresses`: (Optional) Wallet addresses to which you want to send a broadcast message.
 - `wallet`: (Optional) Sends the current signer of the wallet. This is the wallet that will be used to send the broadcast message.
@@ -36,8 +34,6 @@ Here is an example of how to use the `Broadcast` component:
 
 ```jsx
 <Broadcast
-  theme="dark"
-  size="medium"
   wallet={signer}
   walletAddresses={[
     "0x93E2fc3e99dFb1238eB9e0eF2580EFC5809C7204",
@@ -60,15 +56,11 @@ npm install @xmtp/xmtp-js ethers
 After installing the dependencies, you can copy and paste the `Broadcast` component into your project:
 
 ```jsx
-// Import necessary libraries
-import React, { useState, useEffect } from "react";
-import { Client } from "@xmtp/react-sdk"; // XMTP SDK
-import { ethers } from "ethers"; // Ethereum library
+import React, { useState } from "react";
+import { Client } from "@xmtp/xmtp-js";
+import { ethers } from "ethers";
 
-// Define the Broadcast component
 export function Broadcast({
-  theme = "default",
-  size = "medium",
   title = "Broadcast Message",
   wallet,
   walletAddresses = [],
@@ -77,13 +69,11 @@ export function Broadcast({
   env,
   onMessageSuccess,
 }) {
-  // Define state variables
   const [showPopup, setShowPopup] = useState(false);
   const [loading, setLoading] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState(message);
   const [messageSent, setMessageSent] = useState(false);
 
-  // Define styles for the component
   const styles = {
     styledBadge: {
       padding: "0.225rem",
@@ -96,9 +86,6 @@ export function Broadcast({
     },
     ubContainer: {
       position: "fixed",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
       background: "white",
       border: "1px solid #ccc",
       borderRadius: "5px",
@@ -138,19 +125,15 @@ export function Broadcast({
       padding: "10px 20px",
       borderRadius: "5px",
       marginBottom: "2px",
-      border: "none",
       textDecoration: "none",
       color: "black",
       textAlign: "center",
       cursor: "pointer",
       transition: "background-color 0.3s ease",
-      backgroundColor: loading ? "#ccc" : "",
-      cursor: loading ? "not-allowed" : "pointer",
-      color: theme === "dark" ? "#ffffff" : "#333333",
-      backgroundColor:
-        theme === "dark" ? "#333333" : theme === "light" ? "#fff" : "#ededed",
-      border: theme === "light" ? "1px solid #333333" : "none",
-      fontSize: size === "large" ? "16px" : "12px",
+      color: "#333333",
+      backgroundColor: "#ededed",
+      border: "none",
+      fontSize: "12px",
     },
     textArea: {
       width: "100%",
@@ -171,18 +154,30 @@ export function Broadcast({
       fontSize: "12px",
       cursor: "pointer",
     },
+    textArea2: {
+      width: "100%",
+      display: "block",
+      fontSize: "12px",
+      textAlign: "center",
+      marginTop: "20px",
+      marginBottom: "20px",
+      rows: "10",
+    },
+    styledBadged: {
+      display: "flex",
+      flexWrap: "wrap",
+      alignItems: "center",
+      justifyContent: "center",
+      marginBottom: "10px",
+      width: "50%",
+    },
   };
 
-  // Function to connect to the user's wallet
   const connectWallet = async () => {
-    // Check if the user has a web3 provider installed
     if (typeof window.ethereum !== "undefined") {
       try {
-        // Request access to the user's accounts
         await window.ethereum.request({ method: "eth_requestAccounts" });
-        // Create a new ethers provider using the user's web3 provider
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        // Return the signer from the provider
         return provider.getSigner();
       } catch (error) {
         console.error("User rejected request", error);
@@ -192,28 +187,21 @@ export function Broadcast({
     }
   };
 
-  // Function to handle the broadcast click
   const handleBroadcastClick = async () => {
-    // Get the signer from the wallet prop or connect to the user's wallet
     let signer = wallet || (await connectWallet());
 
-    // Check if a signer was obtained
     if (!signer) {
       alert("Please connect to XMTP network first.");
       return;
     }
-    // Check if wallet addresses were provided
     if (walletAddresses.length === 0) {
       alert("Please provide wallet addresses as parameters");
       return;
     }
-    // Check if a message was entered
     if (!broadcastMessage) {
       alert("Please enter a message");
       return;
     }
-
-    // Set loading to true
     setLoading(true);
 
     try {
@@ -225,48 +213,73 @@ export function Broadcast({
       for (let i = 0; i < walletAddresses.length; i++) {
         const wallet = walletAddresses[i];
         const canMessage = broadcasts_canMessage[i];
-        // If the client can message the wallet address
-        if (canMessage) {
+        // If the address can receive messages and has allowed consent
+        if (canMessage && xmtp.contacts.isAllowed(wallet)) {
           // Create a new conversation with the wallet address
           const conversation = await xmtp.conversations.newConversation(wallet);
-          // Send the broadcast message
+          // Send the broadcast message to the conversation
           const sent = await conversation.send(broadcastMessage);
           console.log("Sent", sent);
-          // If a success callback was provided, call it with the sent message
+          // If a callback function is provided, call it with the sent message
           if (onMessageSuccess) {
             onMessageSuccess(sent);
           }
+        } else {
+          // If the address cannot receive messages, log it
+          if (!canMessage) console.log(wallet, " is not on the network");
+          // If the address has not allowed consent, log it
+          if (!xmtp.contacts.isAllowed(wallet))
+            console.log(wallet, " has not allowed consent yet");
         }
       }
-      // Set message sent to true and loading to false
       setMessageSent(true);
       setLoading(false);
 
-      // Reset message sent to false after 3 seconds
       setTimeout(() => {
         setMessageSent(false);
       }, 3000);
     } catch (error) {
       console.log(error);
+      alert(error);
       setLoading(false);
     }
   };
 
-  // Function to handle opening and closing the popup
+  const [walletAddressesInput, setWalletAddressesInput] = useState(
+    walletAddresses.join("\n ")
+  );
+  const [walletAddressesState, setWalletAddressesState] = useState(
+    walletAddressesInput.split(", ")
+  );
   const handleOpenPopup = () => {
+    setWalletAddressesState(walletAddressesInput.split(", "));
     setShowPopup(!showPopup);
   };
+  const handleWalletAddressesInputChange = (event) => {
+    const newAddresses = event.target.value;
+    setWalletAddressesInput(newAddresses);
+    setWalletAddressesState(newAddresses.split(", "));
+  };
 
-  // Render the Broadcast component
   return (
     <>
-      <button
-        className="Broadcast"
-        style={styles.ubButton}
-        onClick={handleOpenPopup}
-      >
-        Send Message
-      </button>
+      <div style={styles.styledBadged}>
+        <small>Addresses:</small>
+        <textarea
+          style={styles.textArea2}
+          rows="5"
+          value={walletAddressesInput}
+          onChange={handleWalletAddressesInputChange}
+          placeholder="Enter wallet addresses here, separated by commas"
+        />
+        <button
+          className="Broadcast"
+          style={styles.ubButton}
+          onClick={handleOpenPopup}
+        >
+          Send Message
+        </button>
+      </div>
       {showPopup && (
         <div
           style={styles.ubContainer}
@@ -278,7 +291,7 @@ export function Broadcast({
           </button>
           <div style={styles.toLabel}>
             To:
-            {walletAddresses.map((address, index) => (
+            {walletAddressesState.map((address, index) => (
               <span key={index} style={styles.toAddress}>
                 {address}
               </span>

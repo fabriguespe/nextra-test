@@ -157,15 +157,15 @@ export function Subscribe({
       // Get the subscriber address
       const subscriberAddress = await getAddress(await connectWallet());
       // Refresh the consent list
-      signerTemp.contacts.refreshConsentList();
+      await signerTemp.contacts.refreshConsentList();
       // Get the consent state of the subscriber
       let state = signerTemp.contacts.consentState(subscriberAddress);
       // If the state is unknown or blocked, allow the subscriber
-      if (state == "unknown" || state == "blocked") {
+      if (state == "unknown" || state == "denied") {
         await signerTemp.contacts.allow([subscriberAddress]);
       } else if (state == "allowed") {
         // If the state is allowed, block the subscriber
-        await signerTemp.contacts.block([subscriberAddress]);
+        await signerTemp.contacts.deny([subscriberAddress]);
       }
       // Refresh the consent list again
       await signerTemp.contacts.refreshConsentList();

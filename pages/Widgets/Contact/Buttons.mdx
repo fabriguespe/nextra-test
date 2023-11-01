@@ -8,8 +8,6 @@ This widget displays a dropdown with deeplink buttons for different apps.
   <Button
     domain="shanemac.eth"
     walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
-    theme="light"
-    size="medium"
   />
 </div>
 
@@ -30,9 +28,7 @@ Here is an example of how to use the `Button` widget in your project. In this ex
 <Button
   domain="shanemac.eth"
   walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
-  theme={"light"}
   deepLinkApps={deepLinkApps}
-  size={"medium"}
 />
 ```
 
@@ -204,14 +200,10 @@ export function Button({
         onClick={() => setShowApps(!showApps)}
       >
         {`${domain}`}
-        <CopyPasteIcon
-          walletAddress={walletAddress}
-          theme={theme}
-          size={size}
-        />
+        <CopyPasteIcon walletAddress={walletAddress} />
       </button>
       {showApps && (
-        <ul style={styles.ButtonList} theme={theme} size={size}>
+        <ul style={styles.ButtonList}>
           {deviceSpecificApps.map((app, index) => (
             <li key={index} style={styles.ButtonListLi}>
               <img
@@ -265,7 +257,6 @@ function CopyPasteIcon({ walletAddress, size }) {
   return (
     <div
       style={styles.copyPasteIconContainer}
-      size={size}
       className={isCopied ? "copied" : ""}
       onClick={(event) => handleCopyClick(event)}
     >

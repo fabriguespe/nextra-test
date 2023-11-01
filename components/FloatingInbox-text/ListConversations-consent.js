@@ -18,6 +18,7 @@ export const ListConversations = ({
       width: "100%",
       justifyContent: "space-between",
       alignItems: "center",
+      margin: "0px",
       border: "0px",
       borderBottom: "1px solid #e0e0e0",
       cursor: "pointer",
@@ -105,7 +106,9 @@ export const ListConversations = ({
       (conversation) => conversation.consentState === "allowed"
     );
     const requests = filteredConversations.filter(
-      (conversation) => conversation.consentState === "unknown"
+      (conversation) =>
+        conversation.consentState === "unknown" ||
+        conversation.consentState === "denied"
     );
 
     setAllowedConversations(allowed);

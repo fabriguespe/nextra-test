@@ -145,14 +145,10 @@ export function Button({
         onClick={() => setShowApps(!showApps)}
       >
         {`${domain}`}
-        <CopyPasteIcon
-          walletAddress={walletAddress}
-          theme={theme}
-          size={size}
-        />
+        <CopyPasteIcon walletAddress={walletAddress} />
       </button>
       {showApps && (
-        <ul style={styles.ButtonList} theme={theme} size={size}>
+        <ul style={styles.ButtonList}>
           {deviceSpecificApps.map((app, index) => (
             <li key={index} style={styles.ButtonListLi}>
               <img
@@ -197,14 +193,13 @@ function CopyPasteIcon({ walletAddress, size }) {
   };
   const styles = {
     copyPasteIconContainer: {
-      width: size === "large" ? "16px" : size === "medium" ? "12px" : "10px",
+      width: "12px",
       marginLeft: "5px",
     },
   };
   return (
     <div
       style={styles.copyPasteIconContainer}
-      size={size}
       className={isCopied ? "copied" : ""}
       onClick={(event) => handleCopyClick(event)}
     >
