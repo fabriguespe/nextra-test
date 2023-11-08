@@ -113,7 +113,9 @@ export const ConversationContainer = ({
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ textAlign: "center", fontSize: "small" }}>Loading...</div>
+    );
   }
   return (
     <div style={styles.conversations}>

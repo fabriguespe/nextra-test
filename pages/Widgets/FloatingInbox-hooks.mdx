@@ -87,7 +87,7 @@ export function Inbox({ wallet, env, relative = false }) {
     }),
     Button: (isOnNetwork) => ({
       position: "fixed",
-      bottom: "70px",
+      bottom: "80px",
       right: "20px",
       width: "300px",
       height: "400px",
@@ -580,7 +580,9 @@ export const ConversationContainer = ({
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ textAlign: "center", fontSize: "small" }}>Loading...</div>
+    );
   }
   return (
     <div style={styles.conversations}>

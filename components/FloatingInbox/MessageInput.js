@@ -1,54 +1,5 @@
 import React, { useState } from "react";
 
-const styles = {
-  newMessageContainer: {
-    display: "flex",
-    alignItems: "center",
-    paddingLeft: "10px",
-    paddingRight: "10px",
-    flexWrap: "wrap",
-  },
-  messageInputField: {
-    flexGrow: 1,
-    padding: "5px",
-    border: "1px solid #ccc",
-    borderRadius: "5px",
-  },
-  sendButton: {
-    padding: "5px 10px",
-    marginLeft: "5px",
-    border: "1px solid #ccc",
-    cursor: "pointer",
-    borderRadius: "5px",
-    display: "flex",
-    alignItems: "center",
-    textAlign: "center",
-    hover: {
-      textDecoration: "underline",
-    },
-  },
-  sendButtonUpload: {
-    padding: "3px",
-    paddingTop: "0px",
-    paddingBottom: "0px",
-    marginLeft: "5px",
-    border: "1px solid #ccc",
-    cursor: "pointer",
-    borderRadius: "5px",
-    display: "flex",
-    alignItems: "center",
-    textAlign: "center",
-  },
-  replyingTo: {
-    fontSize: "10px",
-    color: "grey",
-    paddingBottom: "5px",
-    wordBreak: "break-all",
-    backgroundColor: "lightblue",
-    width: "100%",
-  },
-};
-
 export const MessageInput = ({
   onSendMessage,
   onFileUpload,
@@ -59,6 +10,47 @@ export const MessageInput = ({
   const [newMessage, setNewMessage] = useState("");
   const [image, setImage] = useState(null);
 
+  const styles = {
+    newMessageContainer: {
+      display: "flex",
+      alignItems: "center",
+      padding: "10px",
+      justifyContent: "space-between",
+    },
+    messageInputField: {
+      width: "62%",
+      padding: "5px",
+      border: "1px solid #ccc",
+      borderRadius: "5px",
+    },
+    sendButton: {
+      width: "20%",
+      padding: "2px",
+      border: "1px solid #ccc",
+      cursor: "pointer",
+      height: "100%",
+      borderRadius: "5px",
+      alignItems: "center",
+    },
+    sendButtonUpload: {
+      width: "10%",
+      height: "100%",
+      border: "1px solid #ccc",
+      cursor: "pointer",
+      borderRadius: "5px",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    replyingTo: {
+      fontSize: "10px",
+      color: "grey",
+      paddingBottom: "5px",
+      wordBreak: "break-all",
+      backgroundColor: "lightblue",
+      width: "100%",
+    },
+  };
   const handleDragOver = (event) => {
     event.preventDefault();
   };
@@ -93,7 +85,8 @@ export const MessageInput = ({
     <div
       style={styles.newMessageContainer}
       onDrop={handleFileDrop}
-      onDragOver={handleDragOver}>
+      onDragOver={handleDragOver}
+    >
       {isLoadingUpload ? (
         <small>{loadingText}</small>
       ) : (
@@ -126,7 +119,8 @@ export const MessageInput = ({
               onSendMessage(newMessage, image, replyingToMessage);
               setNewMessage("");
               setImage(null);
-            }}>
+            }}
+          >
             Send
           </button>
         </>

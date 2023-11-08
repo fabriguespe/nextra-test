@@ -56,7 +56,7 @@ export default function Home({
     },
     uContainer: {
       position: isContained ? "relative" : isPWA ? "relative" : "fixed",
-      bottom: isContained ? "0px" : isPWA ? "0px" : "70px",
+      bottom: isContained ? "0px" : isPWA ? "0px" : "80px",
       right: isContained ? "0px" : isPWA ? "0px" : "20px",
       width: isContained ? "100%" : isPWA ? "100%" : "300px",
       height: isContained ? "100%" : isPWA ? "100vh" : "400px",
