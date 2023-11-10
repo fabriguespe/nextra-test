@@ -37,20 +37,20 @@ bun start
 
 - [Enable](https://xmtp-prototypes.vercel.app/Widgets/Enable): Button for enabling XMTP identity for the first time.
 
-- [Buttons](https://xmtp-prototypes.vercel.app/Widgets/Buttons): Styled buttons with a dropdown showcasing different clients.
-
-- [Profile Card](https://xmtp-prototypes.vercel.app/Widgets/ProfileCard): This feature displays a user's profile card with a link to message directly.
-
-- [Contact Link](https://xmtp-prototypes.vercel.app/Widgets/ContactLink): Linked image-only logo to put on footers, headers, navbars, profiles, etc.
-
 - [Floating Inbox](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox): Embeddable web bottom right chat widget with content types and js sdk.
 
 - [Floating Inbox (Text)](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-text): Embeddable web bottom right chat widget with only text.
 
 - [Floating Inbox (Hooks)](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-hooks): Inbox built with the react sdk hooks and only text.
 
-- [Floating Inbox (Hooks) PWA](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-hooks): Inbox built with the react sdk and hooks in PWA mode.
-
 - [Broadcast](https://xmtp-prototypes.vercel.app/Widgets/Broadcast): Broadcast widgets for sending a message to multiple wallets.
+
+#### Contact Widgets
+
+- [Buttons](https://xmtp-prototypes.vercel.app/Widgets/Buttons): Styled buttons with a dropdown showcasing different clients.
+
+- [Profile Card](https://xmtp-prototypes.vercel.app/Widgets/ProfileCard): This feature displays a user's profile card with a link to message directly.
+
+- [Contact Link](https://xmtp-prototypes.vercel.app/Widgets/ContactLink): Linked image-only logo to put on footers, headers, navbars, profiles, etc.
 
 - [Contact Page](https://xmtp-prototypes.vercel.app/Widgets/ContactPage): Page that opens a XMTP inboxes with deeplinking and metadata from ENS.
