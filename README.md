@@ -27,7 +27,6 @@ bun start
 
 ### Example repos
 
-- [xmtp-inbox-portable-consent](https://github.com/fabriguespe/xmtp-inbox-portable-consent)
 - [xmtp-broadcast](https://github.com/fabriguespe/xmtp-broadcast)
 - [xmtp-inbox-portable-consent](https://github.com/fabriguespe/xmtp-inbox-portable-consent)
 - [xmtp-subscribe-portable-consent](https://github.com/fabriguespe/xmtp-subscribe-portable-consent)
