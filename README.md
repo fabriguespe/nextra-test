@@ -31,7 +31,7 @@ bun start
 - [xmtp-inbox-portable-consent](https://github.com/fabriguespe/xmtp-inbox-portable-consent)
 - [xmtp-subscribe-portable-consent](https://github.com/fabriguespe/xmtp-subscribe-portable-consent)
 
-### Widgets
+#### Widgets
 
 - [Subscribe](https://xmtp-prototypes.vercel.app/Widgets/Subscribe): Subscribe to another wallet, newsletter, company or campaign.
 
