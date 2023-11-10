@@ -19,6 +19,12 @@ bun start
 - [How to Create an ENS + XMTP Contact Page in React](https://xmtp-prototypes.vercel.app/Tutorials/ContactPage)
 - [Understanding and Building Portable Consent in XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
 
+### Frames
+
+- [Request Inbox](https://xmtp-prototypes.vercel.app/Frames/RequestInbox)
+- [Subscribe](https://xmtp-prototypes.vercel.app/Frames/Subscribe)
+- [Broadcast](https://xmtp-prototypes.vercel.app/Frames/Broadcast)
+
 ### Widgets
 
 - [Subscribe](https://xmtp-prototypes.vercel.app/Widgets/Subscribe): Subscribe to another wallet, newsletter, company or campaign.
