@@ -1,17 +1,17 @@
 # XMTP Prototypes
 
-### Installation
+#### Installation
 
 ```bash
 bun install
 bun start
 ```
 
-### Blog Posts
+#### Blog Posts
 
 - [How XMTP Widgets can change the way we communicate online](https://xmtp-prototypes.vercel.app/Posts/Contact)
 
-### Tutorials
+#### Tutorials
 
 - [Subscribe to a newsletter with XMTP](https://xmtp-prototypes.vercel.app/Tutorials/Subscribe)
 - [Broadcast a message to multiple wallets](https://xmtp-prototypes.vercel.app/Tutorials/Broadcast)
@@ -19,13 +19,13 @@ bun start
 - [How to Create an ENS + XMTP Contact Page in React](https://xmtp-prototypes.vercel.app/Tutorials/ContactPage)
 - [Understanding and Building Portable Consent in XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
 
-### Frames
+#### Frames
 
 - [Request Inbox](https://xmtp-prototypes.vercel.app/Frames/RequestInbox)
 - [Subscribe](https://xmtp-prototypes.vercel.app/Frames/Subscribe)
 - [Broadcast](https://xmtp-prototypes.vercel.app/Frames/Broadcast)
 
-### Example repos
+#### Example repos
 
 - [xmtp-broadcast](https://github.com/fabriguespe/xmtp-broadcast)
 - [xmtp-inbox-portable-consent](https://github.com/fabriguespe/xmtp-inbox-portable-consent)
