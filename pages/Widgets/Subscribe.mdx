@@ -5,19 +5,17 @@ import { Subscribe } from "/components/Subscribe";
 This component allows users to subscribe to a Dapp through XMTP. It includes callbacks for managing subscribers lists.
 
 <div className="widget-container">
-    <Subscribe
-    onConsentChange={(address, state) => {
-      console.log("New subscriber: ", address, state);
-      let subscriber = subscribeArray.find(sub => sub.address === address);
-      if (subscriber) subscriber.state = state;
-      else subscribeArray.push({ address, state });
-
-      document.getElementById("subscribeArray").innerText =
-        "subscribeArray:"+JSON.stringify(subscribeArray);
+  <Subscribe
+    senderAddress="0x93E2fc3e99dFb1238eB9e0eF2580EFC5809C7204"
+    onSubscribe={(address) => {
+      console.log("New subscriber: ", address);
+    }}
+    onUnsubscribe={(address) => {
+      console.log("Unsubscribed: ", address);
     }}
     onError={(error) => console.log("Error subscribing: " + error)}
     env="production"
-
+  />
 />
 
 <div
@@ -29,18 +27,23 @@ This component allows users to subscribe to a Dapp through XMTP. It includes cal
 
 ### Props
 
-- `wallet`: (Optional) An instance of ethers.js signer.
+- `senderAddress`: A string that sets the sender address. If not provided, a random wallet will be created.
+- `onSubscribe`: (Optional) A callback function that is called when a new subscriber is added.
+- `onUnsubscribe`: (Optional) A callback function that is called when a subscriber is removed.
 - `env`: (Optional) XMTP developer environment. Read more [here](https://xmtp.org/docs/build/authentication#environments)
 - `label`: (Optional) A string that sets the label for the subscribe button. Default is "Subscribe with your wallet".
-- `onConsentChange`: (Optional) A callback function that is called when the consent state of a given address changes.
 - `onError`: (Optional) A callback function that is called when an error occurs during the consent change process.
 
 ### Usage
 
 ```jsx
 <Subscribe
-  onConsentChange={(address, state) => {
-    console.log("New subscriber: ", address, state);
+  senderAddress="0x93E2fc3e99dFb1238eB9e0eF2580EFC5809C7204"
+  onSubscribe={(address) => {
+    console.log("New subscriber: ", address);
+  }}
+  onUnsubscribe={(address) => {
+    console.log("Unsubscribed: ", address);
   }}
   onError={(error) => console.log("Error subscribing: " + error)}
   env="production"
@@ -58,13 +61,14 @@ npm install @xmtp/xmtp-js ethers
 Copy paste the component into your project
 
 ```jsx
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Client } from "@xmtp/xmtp-js";
 import { ethers } from "ethers";
 
 export function Subscribe({
-  wallet,
-  onConsentChange,
+  senderAddress,
+  onSubscribe,
+  onUnsubscribe,
   onError,
   env,
   label = "Subscribe with your wallet",
@@ -73,17 +77,15 @@ export function Subscribe({
   const [loading, setLoading] = useState(false);
   // State for subscription status
   const [subscriptionStatus, setSubscriptionStatus] = useState(label);
-  // State for random wallet address
-  const [randomWalletAddress, setRandomWalletAddress] = useState(null);
-  // State for signer
-  const [signer, setSigner] = useState(null);
   // State for consent log
   const [consentLog, setConsentLog] = useState("");
+  // State for sender address
 
   const styles = {
     SubscribeButtonContainer: {
       position: "relative",
-      display: "inline-block",
+      display: "flex",
+      flexDirection: "column",
       borderRadius: "5px",
       textAlign: "center",
       alignItems: "center",
@@ -106,22 +108,6 @@ export function Subscribe({
     },
   };
 
-  const getAddress = async (signer) => {
-    try {
-      if (signer && typeof signer.getAddress === "function") {
-        return await signer.getAddress();
-      }
-      if (signer && typeof signer.getAddresses === "function") {
-        //viem
-        const [address] = await signer.getAddresses();
-        return address;
-      }
-      return null;
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
@@ -141,55 +127,28 @@ export function Subscribe({
     try {
       // Set loading to true
       setLoading(true);
-      // Check if signer exists, if not create a new one
-      let signerTemp = signer ? signer : null;
-      if (!signerTemp) {
-        // Create a random wallet if wallet does not exist
-        let randomWallet = wallet || ethers.Wallet.createRandom();
-        // Create a new client with the random wallet
-        signerTemp = await Client.create(randomWallet, { env: env });
-        // Set the signer
-        setSigner(signerTemp);
-      }
-      // Set the random wallet address
-      setRandomWalletAddress(signerTemp.address);
-
-      // Get the subscriber address
-      const subscriberAddress = await getAddress(await connectWallet());
-      // Refresh the consent list
-      await signerTemp.contacts.refreshConsentList();
+      // Get the subscriber
+      let wallet = await connectWallet();
+      let client = await Client.create(wallet, { env: env });
+      // Refresh content list
+      await client.contacts.refreshConsentList();
       // Get the consent state of the subscriber
-      let state = signerTemp.contacts.consentState(subscriberAddress);
+      let state = client.contacts.consentState(client.address);
       // If the state is unknown or blocked, allow the subscriber
       if (state == "unknown" || state == "denied") {
-        await signerTemp.contacts.allow([subscriberAddress]);
+        await client.contacts.allow([client.address]);
+        if (typeof onSubscribe === "function") onSubscribe(client.address);
       } else if (state == "allowed") {
         // If the state is allowed, block the subscriber
-        await signerTemp.contacts.deny([subscriberAddress]);
+        if (typeof onUnsubscribe === "function") onUnsubscribe(client.address);
       }
-      // Refresh the consent list again
-      await signerTemp.contacts.refreshConsentList();
-      // Get the new consent state
-      state = signerTemp.contacts.consentState(subscriberAddress);
-
       // Create a log message
-      let log =
-        "Address " +
-        subscriberAddress +
-        " subscribed to random wallet: " +
-        signerTemp.address;
+      let log = "Address " + client.address + " subscribed to " + senderAddress;
       setConsentLog(log);
       console.log(log);
 
       // Set the subscription label
       setSubscriptionStatus("Consent State: " + state);
-
-      // If onConsentChange function exists, call it with the subscriber address and consent state
-      if (onConsentChange)
-        onConsentChange(
-          subscriberAddress,
-          signerTemp.contacts.consentState(subscriberAddress)
-        );
 
       // Set loading to false
       setLoading(false);
@@ -206,6 +165,7 @@ export function Subscribe({
       style={styles.SubscribeButtonContainer}
       className={`Subscribe ${loading ? "loading" : ""}`}
     >
+      <small>Sender address: {senderAddress}</small>
       <button style={styles.SubscribeButton} onClick={handleClick}>
         {loading ? "Loading... " : subscriptionStatus}
       </button>
