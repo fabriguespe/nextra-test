@@ -47,10 +47,10 @@ bun start
 
 #### Contact Widgets
 
-- [Buttons](https://xmtp-prototypes.vercel.app/Widgets/Buttons): Styled buttons with a dropdown showcasing different clients.
+- [Buttons](https://xmtp-prototypes.vercel.app/Widgets/Contact/Buttons): Styled buttons with a dropdown showcasing different clients.
 
-- [Profile Card](https://xmtp-prototypes.vercel.app/Widgets/ProfileCard): This feature displays a user's profile card with a link to message directly.
+- [Profile Card](https://xmtp-prototypes.vercel.app/Widgets/Contact/ProfileCard): This feature displays a user's profile card with a link to message directly.
 
-- [Contact Link](https://xmtp-prototypes.vercel.app/Widgets/ContactLink): Linked image-only logo to put on footers, headers, navbars, profiles, etc.
+- [Contact Link](https://xmtp-prototypes.vercel.app/Widgets/Contact/ContactLink): Linked image-only logo to put on footers, headers, navbars, profiles, etc.
 
-- [Contact Page](https://xmtp-prototypes.vercel.app/Widgets/ContactPage): Page that opens a XMTP inboxes with deeplinking and metadata from ENS.
+- [Contact Page](https://xmtp-prototypes.vercel.app/Widgets/Contact/ContactPage): Page that opens a XMTP inboxes with deeplinking and metadata from ENS.
