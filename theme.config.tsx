@@ -6,14 +6,6 @@ const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/xmtp",
   },
-  layout: {
-    // ...
-    nav: ({ nav }) => {
-      const { asPath } = useRouter();
-      if (asPath === "/Frames/Subscribe") return null;
-      return nav;
-    },
-  },
   docsRepositoryBase: "https://github.com/xmtp",
   footer: {
     text: "Nextra Docs Template",
