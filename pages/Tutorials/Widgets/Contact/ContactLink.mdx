@@ -1,0 +1,95 @@
+import { ContactLink } from "/components/ContactLink";
+
+# Contact Link Widget
+
+This widget is a React component that displays a button. When clicked, it opens a contact form for the specified ENS or domain.
+
+<div className="widget-container ">
+  <ContactLink
+    domain="shanemac.eth"
+    walletAddress="0x7E0b0363404751346930AF92C80D1fef932Cc48a"
+  />
+</div>
+
+### Props
+
+Here are the properties that you can pass to the `ContactLink` component:
+
+- `domain`: (Required) The ENS or domain of the user.
+- `walletAddress`: (Required) The wallet address of the user.
+- `defaultApp`: (Optional) The default messaging application to use when contacting the user.
+- `theme`: (Optional) The theme of the contact button. Accepts "default", "dark", or "light".
+- `showText`: (Optional) A boolean value determining whether to display the text on the button.
+- `deepLinkApps`: (Optional) An object containing information about different messaging apps.
+
+### Usage
+
+Here is an example of how to use the `ContactLink` component:
+
+```jsx
+<ContactLink
+  domain="shanemac.eth"
+  walletAddress="0xUserWalletAddress"
+  showText={true}
+/>
+```
+
+### Installation
+
+Copy paste the component into your project
+
+```jsx
+import React from "react";
+
+const styles = {
+  ContactLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    padding: "0px",
+    backgroundColor: "transparent",
+    color: "#000",
+    textDecoration: "none",
+    borderRadius: "4px",
+    transition: "background-color 0.3s ease",
+  },
+};
+
+export function ContactLink({
+  domain,
+  walletAddress,
+  defaultApp = "xmtp",
+  deepLinkApps = {
+    xmtp: {
+      url: `https://xmtp-react-widgets.vercel.app/link/${domain}`,
+      icon: "https://xmtp.chat/favicon.ico",
+      device: ["All"],
+      name: "xmtp",
+    },
+  },
+  theme = "default",
+  size = "small",
+  showText = true,
+}) {
+  const selectedApp = deepLinkApps[defaultApp];
+
+  return (
+    <>
+      <a
+        href={selectedApp.url
+          .replace("{walletAddress}", walletAddress)
+          .replace("{domain}", domain)}
+        target="_newtab"
+        rel="noopener noreferrer"
+        style={styles.ContactLink}
+        className={`ContactLink ${theme}`}
+      >
+        {showText && domain}
+      </a>
+    </>
+  );
+}
+```
+
+```jsx
+import { ContactLink } from "./ContactLink";
+```

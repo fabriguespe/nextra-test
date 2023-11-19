@@ -6,10 +6,30 @@ const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/xmtp",
   },
+  darkMode: false,
   docsRepositoryBase: "https://github.com/xmtp",
   footer: {
-    text: "Nextra Docs Template",
+    text: "XMTP Prototypes",
   },
+  useNextSeoProps() {
+    return {
+      titleTemplate: "%s – XMTP Prototypes",
+    };
+  },
+  head: (
+    <>
+      <meta name="title" content="XMTP Prototypes" />
+      <meta
+        name="description"
+        content="XMTP Prototypes is a collection of interactive widgets, tutorials and blog posts."
+      />
+      <meta name="og:title" content="XMTP Prototypes" />
+      <meta
+        name="og:description"
+        content="XMTP Prototypes is a collection of interactive widgets, tutorials and blog posts."
+      />
+    </>
+  ),
 };
 
 export default config;

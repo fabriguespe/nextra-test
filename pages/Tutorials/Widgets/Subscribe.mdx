@@ -1,0 +1,205 @@
+import { Subscribe } from "/components/Subscribe";
+
+# Subscribe Button Widget
+
+This component allows users to subscribe to a Dapp through XMTP. It includes callbacks for managing subscribers lists.
+
+<div className="widget-container">
+  <Subscribe
+    senderAddress="0x93E2fc3e99dFb1238eB9e0eF2580EFC5809C7204"
+    onSubscribe={(address) => {
+      console.log("New subscriber: ", address);
+    }}
+    onUnsubscribe={(address) => {
+      console.log("Unsubscribed: ", address);
+    }}
+    onError={(error) => console.log("Error subscribing: " + error)}
+    env="production"
+  />
+/>
+
+<div
+  id="subscribeArray"
+  style={{ textAlign: "center", fontSize: "12px" }}
+></div>
+
+</div>
+
+### Props
+
+- `senderAddress`: A string that sets the sender address. If not provided, a random wallet will be created.
+- `onSubscribe`: (Optional) A callback function that is called when a new subscriber is added.
+- `onUnsubscribe`: (Optional) A callback function that is called when a subscriber is removed.
+- `env`: (Optional) XMTP developer environment. Read more [here](https://xmtp.org/docs/build/authentication#environments)
+- `label`: (Optional) A string that sets the label for the subscribe button. Default is "Subscribe with your wallet".
+- `onError`: (Optional) A callback function that is called when an error occurs during the consent change process.
+
+### Usage
+
+```jsx
+<Subscribe
+  senderAddress="0x93E2fc3e99dFb1238eB9e0eF2580EFC5809C7204"
+  onSubscribe={(address) => {
+    console.log("New subscriber: ", address);
+  }}
+  onUnsubscribe={(address) => {
+    console.log("Unsubscribed: ", address);
+  }}
+  onError={(error) => console.log("Error subscribing: " + error)}
+  env="production"
+/>
+```
+
+### Installation
+
+Install required dependencies
+
+```bash
+npm install @xmtp/xmtp-js ethers
+```
+
+Copy paste the component into your project
+
+```jsx
+import React, { useState } from "react";
+import { Client } from "@xmtp/xmtp-js";
+import { ethers } from "ethers";
+
+export function Subscribe({
+  senderAddress,
+  onSubscribe,
+  onUnsubscribe,
+  onError,
+  env,
+  label = "Subscribe with your wallet",
+}) {
+  // State for loading status
+  const [loading, setLoading] = useState(false);
+  // State for subscription status
+  const [subscriptionStatus, setSubscriptionStatus] = useState(label);
+  // State for consent log
+  const [consentLog, setConsentLog] = useState("");
+  // State for sender address
+
+  const styles = {
+    SubscribeButtonContainer: {
+      position: "relative",
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: "5px",
+      textAlign: "center",
+      alignItems: "center",
+    },
+    SubscribeButton: {
+      display: "inline-flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "10px 20px",
+      borderRadius: "5px",
+      marginBottom: "2px",
+      textAlign: "left",
+      cursor: "pointer",
+      transition: "background-color 0.3s ease",
+      fontWeight: "bold",
+      color: "#333333",
+      backgroundColor: "#ededed",
+      border: "none",
+      fontSize: "12px",
+    },
+  };
+
+  const connectWallet = async () => {
+    if (typeof window.ethereum !== "undefined") {
+      try {
+        await window.ethereum.request({ method: "eth_requestAccounts" });
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        return provider.getSigner();
+      } catch (error) {
+        console.error("User rejected request", error);
+      }
+    } else {
+      console.error("Metamask not found");
+    }
+  };
+
+  // Define the handleClick function
+  const handleClick = async () => {
+    try {
+      // Set loading to true
+      setLoading(true);
+      // Get the subscriber
+      let wallet = await connectWallet();
+      let client = await Client.create(wallet, { env: env });
+      // Refresh content list
+      await client.contacts.refreshConsentList();
+      // Get the consent state of the subscriber
+      let state = client.contacts.consentState(client.address);
+      // If the state is unknown or blocked, allow the subscriber
+      if (state == "unknown" || state == "denied") {
+        await client.contacts.allow([client.address]);
+        if (typeof onSubscribe === "function") onSubscribe(client.address);
+      } else if (state == "allowed") {
+        // If the state is allowed, block the subscriber
+        if (typeof onUnsubscribe === "function") onUnsubscribe(client.address);
+      }
+      // Create a log message
+      let log = "Address " + client.address + " subscribed to " + senderAddress;
+      setConsentLog(log);
+      console.log(log);
+
+      // Set the subscription label
+      setSubscriptionStatus("Consent State: " + state);
+
+      // Set loading to false
+      setLoading(false);
+    } catch (error) {
+      // If onError function exists, call it with the error
+      if (typeof onError === "function") onError(error);
+      // Log the error
+      console.log(error);
+    }
+  };
+
+  return (
+    <div
+      style={styles.SubscribeButtonContainer}
+      className={`Subscribe ${loading ? "loading" : ""}`}
+    >
+      <small>Sender address: {senderAddress}</small>
+      <button style={styles.SubscribeButton} onClick={handleClick}>
+        {loading ? "Loading... " : subscriptionStatus}
+      </button>
+    </div>
+  );
+}
+```
+
+Import the component into your project
+
+```jsx
+import { Subscribe } from "./Subscribe";
+```
+
+#### Wallet Signer
+
+Please note that all widgets in this library that require a wallet signer only accept an instance of the `ethers.js` signer. Other types of signers are not supported at this time.
+
+The signer is optional. If the signer is not detected, the widgets have a built-in mechanism to establish a connection.
+
+For example, when using the `Subscribe` or `Inbox` widgets, you should provide an `ethers.js` signer instance like so:
+
+```jsx
+<Subscribe
+  // Other props
+  wallet={signer}
+/>
+```
+
+```jsx
+<Inbox
+  // Other props
+  wallet={signer}
+/>
+```
+
+Ensure that you have properly initialized the `ethers.js` signer instance before passing it to the widget.

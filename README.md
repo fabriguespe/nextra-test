@@ -1,5 +1,7 @@
 # XMTP Prototypes
 
+XMTP Prototypes is a collection of interactive widgets, tutorials and blog posts.
+
 #### Installation
 
 ```bash
