@@ -1,5 +1,4 @@
 import React from "react";
-import { ContentTypeId } from "@xmtp/xmtp-js";
 
 export const MessageItem = ({ message, senderAddress, client }) => {
   const renderMessage = (message) => {
