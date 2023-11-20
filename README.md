@@ -22,7 +22,7 @@ bun start
 - [Support attachments in your app built with XMTP](https://xmtp-prototypes.vercel.app/Tutorials/RemoteAttachments)
 - [Understanding and Building Portable Consent in XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
 
-#### Frames
+#### iFrames
 
 - [Request Inbox](https://xmtp-prototypes.vercel.app/Frames/RequestInbox)
 - [Subscribe](https://xmtp-prototypes.vercel.app/Frames/Subscribe)
