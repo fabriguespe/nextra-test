@@ -10,7 +10,7 @@ const config: DocsThemeConfig = {
   footer: {
     text: "XMTP Prototypes",
   },
-  themes: ["light"],
+  darkMode: false,
   useNextSeoProps() {
     return {
       titleTemplate: "%s – XMTP Prototypes",
