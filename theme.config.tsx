@@ -6,11 +6,11 @@ const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/xmtp",
   },
-  darkMode: false,
   docsRepositoryBase: "https://github.com/xmtp",
   footer: {
     text: "XMTP Prototypes",
   },
+  themes: ["light"],
   useNextSeoProps() {
     return {
       titleTemplate: "%s – XMTP Prototypes",

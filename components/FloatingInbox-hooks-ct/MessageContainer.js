@@ -68,6 +68,7 @@ export const MessageContainer = ({
             message,
             client
           );
+          // newImageSources[message.id] = await getAttachment(message);
         }
       }
 
