@@ -7,9 +7,7 @@ export const MessageItem = ({ message, senderAddress, client }) => {
         return <div style={styles.renderedMessage}>{message?.content}</div>;
       }
     } catch {
-      return message?.fallbackContent ? (
-        message?.fallbackContent
-      ) : message?.contentFallback ? (
+      return message?.contentFallback ? (
         message?.contentFallback
       ) : (
         <div style={styles.renderedMessage}>{message?.content}</div>

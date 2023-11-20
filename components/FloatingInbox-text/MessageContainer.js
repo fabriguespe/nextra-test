@@ -138,6 +138,7 @@ export const MessageContainer = ({
   }, [conversation]);
 
   useEffect(() => {
+    console.log("isContained", isContained);
     if (!isContained)
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -173,7 +174,7 @@ export const MessageContainer = ({
                 />
               );
             })}
-            <div ref={messagesEndRef} />
+            <div ref={messagesEndRef} id="messagesEndRef" />
           </ul>
           {isConsent && showPopup ? (
             <div style={styles.popup}>

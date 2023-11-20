@@ -175,7 +175,7 @@ const MessageItem = ({
 
   const renderMessage = (message) => {
     try {
-      if (message.contentType.sameAs(ContentTypeRemoteAttachment)) {
+      if (message?.contentType.sameAs(ContentTypeRemoteAttachment)) {
         return (
           <>
             {imgSrc ? (
@@ -185,20 +185,17 @@ const MessageItem = ({
             )}
           </>
         );
-      } else if (message.contentType.sameAs(ContentTypeReaction)) {
+      } else if (message?.contentType.sameAs(ContentTypeReaction)) {
         //No render reactions
-      } else if (message.contentType.sameAs(ContentTypeReply)) {
-        console.log("message.content.content", message.content.content);
+      } else if (message?.contentType.sameAs(ContentTypeReply)) {
         return <>{message?.content?.content}</>;
-      } else if (message.contentType.sameAs(ContentTypeReadReceipt)) {
+      } else if (message?.contentType.sameAs(ContentTypeReadReceipt)) {
         //No render reactions
       } else if (message?.content.length > 0) {
         return <div style={styles.RenderedMessage}>{message?.content}</div>;
       }
     } catch {
-      return message?.fallbackContent ? (
-        message?.fallbackContent
-      ) : message?.contentFallback ? (
+      return message?.contentFallback ? (
         message?.contentFallback
       ) : (
         <div style={styles.RenderedMessage}>{message?.content}</div>

@@ -1,8 +1,8 @@
-import { FloatingInbox } from "/components/FloatingInbox-text";
+import { FloatingInbox } from "/components/FloatingInbox-hooks-ct";
 
-# Floating Inbox (Text)
+# Floating Inbox (Hooks) CT
 
-This widget is a floating messaging component designed to allow for integrating web3 messaging in any website. Uses the JS sdk and only text content types.
+The widget is a floating messaging component designed to allow for integrating web3 messaging in any website. Uses React SDK hooks.
 
 <div className="widget-container">
   <FloatingInbox env="production" />
@@ -28,8 +28,8 @@ The Inbox widget can be controlled programmatically using global methods to open
 Use the following command to open or close the Inbox:
 
 ```jsx
-window.FloatingInbox.open();
-window.FloatingInbox.close();
+window.Inbox.open();
+window.Inbox.close();
 ```
 
 #### Example Integration
@@ -227,40 +227,31 @@ export function Inbox({ wallet, env, relative = false }) {
       console.log(e);
     }
   };
-  // Function to initialize XMTP with keys
+
   const initXmtpWithKeys = async function () {
-    // If signer is not available, logout and return
     if (!signer) {
       handleLogout();
       return;
     }
-    // Get the address from the signer
     let address = await getAddress(signer);
-    // Load keys for the address
     let keys = loadKeys(address);
-    // Define client options
     const clientOptions = {
       env: env ? env : getEnv(),
     };
-    // If keys are not available, get keys from the client
     if (!keys) {
       keys = await Client.getKeys(signer, {
         ...clientOptions,
         skipContactPublishing: true,
         persistConversations: false,
       });
-      // Store the keys for the address
       storeKeys(address, keys);
     }
-    // Create XMTP client with the keys
     const xmtp = await Client.create(null, {
       ...clientOptions,
       privateKeyOverride: keys,
     });
 
-    // Set network status based on XMTP address availability
     setIsOnNetwork(!!xmtp.address);
-    // Set XMTP client
     setXmtpClient(xmtp);
   };
 
@@ -482,6 +473,7 @@ export const ConversationContainer = ({
       const conv2 = await client.conversations.newConversation(
         "0xa64af7F78DE39A238Ecd4ffF7D6D410DBACe2dF0"
       );
+
       stream = await client.conversations.stream();
       for await (const conversation of stream) {
         console.log(
@@ -644,7 +636,6 @@ export const ConversationContainer = ({
       )}
       {selectedConversation && (
         <MessageContainer
-          client={client}
           conversation={selectedConversation}
           searchTerm={searchTerm}
           selectConversation={selectConversation}
@@ -720,6 +711,7 @@ export const MessageContainer = ({
   const startMessageStream = async () => {
     let stream = await conversation.streamMessages();
     for await (const message of stream) {
+      console.log("Received new message", message);
       setMessages((prevMessages) => {
         return updateMessages(prevMessages, message);
       });
@@ -763,7 +755,6 @@ export const MessageContainer = ({
                     key={message.id}
                     message={message}
                     senderAddress={message.senderAddress}
-                    client={client}
                   />
                 );
               })}

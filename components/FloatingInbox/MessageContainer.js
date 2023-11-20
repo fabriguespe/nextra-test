@@ -258,10 +258,13 @@ export const MessageContainer = ({
           });
         }
       }
+
       const upload = new Upload(attachment.filename, encryptedEncoded.payload);
       const { Web3Storage } = require("web3.storage");
       const web3Storage = new Web3Storage({
-        token: process.env.REACT_APP_WEB3STORAGE_KEY,
+        token: process.env.REACT_APP_WEB3STORAGE_KEY
+          ? process.env.REACT_APP_WEB3STORAGE_KEY
+          : process.env.NEXT_PUBLIC_WEB3STORAGE_KEY,
       });
 
       const cid = await web3Storage.put([upload]);
@@ -289,8 +292,7 @@ export const MessageContainer = ({
       setIsLoadingUpload(false);
     }
   };
-  const handleFileUpload = (event) => {
-    const file = event?.target?.files[0];
+  const handleFileUpload = (file) => {
     setImage(file);
   };
 

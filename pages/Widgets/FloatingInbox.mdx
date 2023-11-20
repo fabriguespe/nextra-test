@@ -233,7 +233,6 @@ export function Inbox({ wallet, env, relative = false }) {
       handleLogout();
       return;
     }
-    console.log("entra7");
     let address = await getAddress(signer);
     let keys = loadKeys(address);
     const clientOptions = {
@@ -474,8 +473,6 @@ export const ConversationContainer = ({
       const conv2 = await client.conversations.newConversation(
         "0xa64af7F78DE39A238Ecd4ffF7D6D410DBACe2dF0"
       );
-      console.log("conv2 messages", await conv2.messages());
-
       stream = await client.conversations.stream();
       for await (const conversation of stream) {
         console.log(
@@ -533,7 +530,6 @@ export const ConversationContainer = ({
     setMessage("Searching...");
     const addressInput = e.target.value;
     const isEthDomain = /\.eth$/.test(addressInput);
-    console.log(isEthDomain, addressInput);
     if (!isEthDomain) {
       return;
     }
@@ -839,9 +835,7 @@ export const MessageItem = ({ message, senderAddress, client }) => {
         return <div style={styles.renderedMessage}>{message?.content}</div>;
       }
     } catch {
-      return message?.fallbackContent ? (
-        message?.fallbackContent
-      ) : message?.contentFallback ? (
+      return message?.contentFallback ? (
         message?.contentFallback
       ) : (
         <div style={styles.renderedMessage}>{message?.content}</div>

@@ -42,7 +42,6 @@ export function ConnectWallet({
 
   const createNewWallet = () => {
     const newWallet = ethers.Wallet.createRandom();
-    console.log("newWallet", newWallet, typeof onWalletConnected);
     if (typeof onWalletConnected === "function") {
       onWalletConnected(newWallet);
     }
@@ -50,10 +49,9 @@ export function ConnectWallet({
   const connectWallet = async () => {
     if (typeof window.ethereum !== "undefined") {
       try {
-        console.log("click2");
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const provider = new ethers.providers.Web3Provider(window.ethereum);
-        console.log("click23");
+
         return provider.getSigner();
       } catch (error) {
         console.error("User rejected request", error);
@@ -64,11 +62,9 @@ export function ConnectWallet({
   };
 
   const handleClick = async () => {
-    console.log("click");
     setLoading(true);
     const signer = await connectWallet();
     if (signer && typeof onWalletConnected === "function") {
-      console.log("click1");
       onWalletConnected(signer);
     }
     setLoading(false);

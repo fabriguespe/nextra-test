@@ -1,7 +1,8 @@
 import React from "react";
-import { useClient } from "@xmtp/react-sdk";
+import { ContentTypeRemoteAttachment } from "@xmtp/content-type-remote-attachment";
+import { useClient, ContentTypeId } from "@xmtp/react-sdk";
 
-const MessageItem = ({ message, senderAddress, isPWA = false }) => {
+const MessageItem = ({ message, senderAddress, imgSrc, isPWA = false }) => {
   const { client } = useClient();
   const styles = {
     messageContent: {
@@ -46,7 +47,18 @@ const MessageItem = ({ message, senderAddress, isPWA = false }) => {
   };
   const renderMessage = (message) => {
     try {
-      if (message?.content.length > 0) {
+      const contentType = ContentTypeId.fromString(message.contentType);
+      if (contentType.sameAs(ContentTypeRemoteAttachment)) {
+        return (
+          <>
+            {imgSrc ? (
+              <img src={imgSrc} alt="Attachment" style={{ maxWidth: "100%" }} />
+            ) : (
+              "Downloading attachment..."
+            )}
+          </>
+        );
+      } else if (message?.content.length > 0) {
         return <div style={styles.renderedMessage}>{message?.content}</div>;
       }
     } catch {
@@ -57,7 +69,6 @@ const MessageItem = ({ message, senderAddress, isPWA = false }) => {
       );
     }
   };
-
   const isSender = senderAddress === client?.address;
 
   return (
