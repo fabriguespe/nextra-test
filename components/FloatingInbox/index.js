@@ -18,6 +18,7 @@ export function FloatingInbox({
   onLogout,
   isContained = false,
   isConsent = false,
+  initialAddress,
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOnNetwork, setIsOnNetwork] = useState(false);
@@ -262,6 +263,10 @@ export function FloatingInbox({
     xmtp.registerCodec(new ReactionCodec());
     xmtp.registerCodec(new ReadReceiptCodec());
 
+    if (initialAddress) {
+      const conv = await xmtp.conversations.newConversation(initialAddress);
+      setSelectedConversation(conv);
+    }
     setClient(xmtp);
     setIsOnNetwork(!!xmtp.address);
     if (isConsent) {

@@ -138,7 +138,6 @@ export const MessageContainer = ({
   }, [conversation]);
 
   useEffect(() => {
-    console.log("isContained", isContained);
     if (!isContained)
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

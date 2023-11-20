@@ -12,13 +12,14 @@ Managing user consent is essential for enhancing privacy and user experience. If
     marginTop: "20px",
   }}
 >
-  <h3 style={{ width: "50%" }}>**Without Consent**</h3>
-  <h3 style={{ width: "50%" }}>**With Consent**</h3>
+  <b style={{ width: "50%" }}>Without Consent</b>
+  <b style={{ width: "50%" }}>With Consent</b>
 </div>
 
 <div className="widget-container" style={{ padding: "0px", height: "400px" }}>
-  <FloatingInbox env="production" isContained={true} isConsent={false} />
-  <FloatingInbox env="production" isContained={true} isConsent={true} />
+
+<iframe src='/Frames/FloatingInbox' width='50%' height='400px' frameBorder='0' scrolling='no' allowFullScreen></iframe>
+<iframe src='/Frames/RequestInbox' width='50%' height='400px' frameBorder='0' scrolling='no' allowFullScreen></iframe>
 </div>
 
 #### Initialize XMTP Client with Consent

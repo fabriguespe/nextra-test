@@ -15,6 +15,7 @@ export const MessageContainer = ({
   conversation,
   client,
   searchTerm,
+  isContained = false,
   selectConversation,
 }) => {
   const [imageSources, setImageSources] = useState({});
@@ -297,7 +298,8 @@ export const MessageContainer = ({
   };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (!isContained)
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const getImageSrcFromMessage = async (message, client) => {
