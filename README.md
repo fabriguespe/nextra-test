@@ -29,7 +29,7 @@ bun start
 - [Broadcast](https://xmtp-prototypes.vercel.app/Frames/Broadcast)
 - [ContactPage](https://xmtp-prototypes.vercel.app/Frames/ContactPage)
 - [FloatingInbox](https://xmtp-prototypes.vercel.app/Frames/FloatingInbox)
-- [RemoteAttachments](https://xmtp-prototypes.vercel.app/Frames/RemoteAttachments)
+- [RemoteAttachments](https://xmtp-prototypes.vercel.app/Frames/RemoteAttachment)
 - Contact
   - [ContactPage](https://xmtp-prototypes.vercel.app/Frames/ContactPage)
   - [ContactLink](https://xmtp-prototypes.vercel.app/Frames/ContactLink)
