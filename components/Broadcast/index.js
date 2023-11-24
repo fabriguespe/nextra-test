@@ -111,7 +111,6 @@ export function Broadcast({
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "10px",
-      width: "50%",
     },
   };
 
