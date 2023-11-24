@@ -11,7 +11,7 @@ bun start
 
 #### Blog Posts
 
-- [How XMTP Widgets can change the way we communicate online](https://xmtp-prototypes.vercel.app/Posts/Contact)
+- [The Web3 mailto:](https://xmtp-prototypes.vercel.app/Posts/Contact)
 
 #### Tutorials
 
