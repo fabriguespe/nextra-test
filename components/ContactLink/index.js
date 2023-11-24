@@ -2,8 +2,10 @@ import React from "react";
 
 const styles = {
   ContactLink: {
-    display: "inline-flex",
+    display: "flex",
     alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
     padding: "0px",
     backgroundColor: "transparent",
     color: "#000",
@@ -32,7 +34,7 @@ export function ContactLink({
   const selectedApp = deepLinkApps[defaultApp];
 
   return (
-    <>
+    <div style={{ height: "100%" }}>
       <a
         href={selectedApp.url
           .replace("{walletAddress}", walletAddress)
@@ -44,6 +46,6 @@ export function ContactLink({
       >
         {showText && domain}
       </a>
-    </>
+    </div>
   );
 }
