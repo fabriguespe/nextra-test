@@ -32,7 +32,7 @@ import { ethers } from "ethers";
 // Function to connect to the Ethereum wallet
 const connectWallet = async () => {
   // Check if Ethereum is injected into the window object
-  if (typeof window.ethereum !== "undefined") {
+  if (typeof window.ethereum !== undefined) {
     try {
       // Request access to the user's Ethereum accounts
       await window.ethereum.request({ method: "eth_requestAccounts" });

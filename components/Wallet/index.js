@@ -47,7 +47,7 @@ export function ConnectWallet({
     }
   };
   const connectWallet = async () => {
-    if (typeof window.ethereum !== "undefined") {
+    if (typeof window.ethereum !== undefined) {
       try {
         await window.ethereum.request({ method: "eth_requestAccounts" });
         const provider = new ethers.providers.Web3Provider(window.ethereum);
