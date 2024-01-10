@@ -111,6 +111,7 @@ export function Broadcast({
       alignItems: "center",
       justifyContent: "center",
       marginBottom: "10px",
+      width: "50%",
     },
   };
 
@@ -148,6 +149,8 @@ export function Broadcast({
     try {
       // Create a new XMTP client with the signer and environment
       const xmtp = await Client.create(signer, { env: env });
+
+      // Refresh the consent list to make sure your application is up-to-date with the network
       await xmtp.contacts.refreshConsentList();
 
       // Check if the client can message the provided wallet addresses

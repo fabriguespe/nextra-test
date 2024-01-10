@@ -20,7 +20,7 @@
   "dependencies": {
     "@ensdomains/ens-avatar": "0.2.5",
     "@xmtp/react-sdk": "^3.0.0",
-    "@xmtp/xmtp-js": "latest",
+    "@xmtp/xmtp-js": "^11.3.2",
     "inter-ui": "^3.19.3",
     "next": "^13.0.6",
     "nextra": "latest",

@@ -13,6 +13,16 @@ This tutorial will guide you on how to create a simple `Subscribe` button with c
   allowFullScreen
 ></iframe>
 
+## Considerations
+
+Before diving into the code let's consider important aspects while integrating consent features. For example, before making an allow or block action you should synchronize the updated consent list in order to **prevent overwriting network** consent from another app. For more details head to these sections of our docs:
+
+- [Understand user consent preferences](https://xmtp.org/docs/build/user-consent#understand-user-consent-preferences): Here are some of the ways user consent preferences are set
+- [Use consent preferences to respect user intent](https://xmtp.org/docs/build/user-consent#use-consent-preferences-to-respect-user-intent): Your app should aim to handle consent preferences appropriately because they are an expression of user intent.
+- [Synchronize user consent preferences](https://xmtp.org/docs/build/user-consent#synchronize-user-consent-preferences):All apps that use the user consent feature must adhere to the logic described in this section to keep the consent list on the network synchronized with local app user consent preferences, and vice versa.
+
+## Quickstart
+
 #### Import libraries
 
 Import the necessary XMTP and Ethereum packages. These libraries enable you to create an XMTP client and interact with the Ethereum blockchain.
@@ -34,7 +44,7 @@ let wallet = await connectWallet();
 let client = await Client.create(wallet, { env: env });
 ```
 
-##### Consent State Management
+#### Consent State Management
 
 This section delves into a crucial part of the subscription widget — managing the consent state of a subscriber. We'll explore how to get the subscriber's address, refresh the consent list, get the current consent state, and then update it based on user actions.
 
@@ -43,7 +53,7 @@ This section delves into a crucial part of the subscription widget — managing 
 To ensure we're working with the most up-to-date information, we refresh the consent list.
 
 ```jsx
-// Refresh content list
+// Refresh the consent list to make sure your application is up-to-date with the
 await client.contacts.refreshConsentList();
 ```
 
@@ -63,11 +73,11 @@ Based on the current state, we either allow or block the subscriber.
 ```jsx
 // If the state is unknown or blocked, allow the subscriber
 if (state == "unknown" || state == "denied") {
-  await client.contacts.allow([client.address]);
+  await client.contacts.allow([senderAddress]);
 }
 ```
 
-- If the state is `unknown` or `blocked`, we change it to `allowed` using `client.contacts.allow([address])` and we call the `onSubscribe` function if it exists.
+- If the state is `unknown` or `blocked`, we change it to `allowed` using `client.contacts.allow([senderAddress])` and we call the `onSubscribe` function if it exists.
 - If the state is `allowed`, we don't change the consent and we call the `onUnsubscribe` function if it exists.
 
 **Callbacks**
@@ -87,7 +97,22 @@ The `onSubscribe` and `onUnsubscribe` functions are called when the consent stat
 />
 ```
 
-#### Reference code
+## Caution ⚠️
+
+**Always synchronize consent states:** Before updating consent preferences on the network, ensure you refresh the consent list with `await xmtp.contacts.refreshConsentList();`. Update the network's consent list only in these scenarios:
+
+- **User Denies Contact:** Set to `denied` if a user blocks or unsubscribes.
+- **User Allows Contact:** Set to `allowed` if a user subscribes or enables notifications.
+- **Legacy Preferences:** Align the network with any existing local preferences.
+- **User Response:** Set to `allowed` if the user has engaged in conversation.
+
+Neglecting these guidelines can result in consent state conflicts and compromise user privacy.
+
+## Conclusion
+
+Consent has really evolved through the years. It started with email, then email marketing, and was the wild west until laws like GPDR stepped in. This is new chapter in the history of consent in a new era for privacy, portability, and ownership.
+
+## Reference code
 
 Copy paste the component into your project
 
@@ -161,23 +186,30 @@ export function Subscribe({
       // Get the subscriber
       let wallet = await connectWallet();
       let client = await Client.create(wallet, { env: env });
-      // Refresh content list
+
+      // Refresh the consent list to make sure your application is up-to-date with the
       await client.contacts.refreshConsentList();
+
       // Get the consent state of the subscriber
       let state = client.contacts.consentState(senderAddress);
+
       // If the state is unknown or blocked, allow the subscriber
-      if (state == "unknown" || state == "denied") {
+      if (state === "unknown" || state === "denied") {
         state = "allowed";
         await client.contacts.allow([senderAddress]);
         if (typeof onSubscribe === "function")
           onSubscribe(client.address, state);
-      } else if (state == "allowed") {
+      } else if (state === "allowed") {
         state = "denied";
         await client.contacts.deny([senderAddress]);
         // If the state is allowed, block the subscriber
         if (typeof onUnsubscribe === "function")
           onUnsubscribe(client.address, state);
       }
+
+      //Print the whole list
+      console.log(await client.contacts.refreshConsentList());
+      console.log(await client.contacts.loadConsentList());
 
       // Set the subscription label
       setSubscriptionStatus("Consent State: " + state);

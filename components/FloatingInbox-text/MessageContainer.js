@@ -15,7 +15,7 @@ export const MessageContainer = ({
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const [showPopup, setShowPopup] = useState(
-    conversation.consentState === "unknown"
+    conversation.consentState === "unknown",
   );
 
   const styles = {
@@ -68,7 +68,7 @@ export const MessageContainer = ({
 
   const updateMessages = (prevMessages, newMessage) => {
     const doesMessageExist = prevMessages.some(
-      (existingMessage) => existingMessage.id === newMessage.id
+      (existingMessage) => existingMessage.id === newMessage.id,
     );
 
     if (!doesMessageExist) {
@@ -100,6 +100,8 @@ export const MessageContainer = ({
 
   // Function to handle the acceptance of a contact
   const handleAccept = async () => {
+    // Refresh the consent list first
+    await client.contacts.refreshConsentList();
     // Allow the contact
     await client.contacts.allow([conversation.peerAddress]);
     // Hide the popup
@@ -112,6 +114,8 @@ export const MessageContainer = ({
 
   // Function to handle the blocking of a contact
   const handleBlock = async () => {
+    // Refresh the consent list first
+    await client.contacts.refreshConsentList();
     // Block the contact
     await client.contacts.deny([conversation.peerAddress]);
     // Hide the popup
@@ -148,8 +152,10 @@ export const MessageContainer = ({
       return;
     }
     if (conversation && conversation.peerAddress) {
+      // Sending a message will implicitly set the consent state to "allowed"
       await conversation.send(newMessage);
     } else if (conversation) {
+      // Crearting a new conversation also sets the consent state to "allowed"
       const conv = await client.conversations.newConversation(searchTerm);
       selectConversation(conv);
       await conv.send(newMessage);
@@ -173,7 +179,7 @@ export const MessageContainer = ({
                 />
               );
             })}
-            <div ref={messagesEndRef} id="messagesEndRef" />
+            <div ref={messagesEndRef} />
           </ul>
           {isConsent && showPopup ? (
             <div style={styles.popup}>
@@ -181,14 +187,12 @@ export const MessageContainer = ({
               <div style={styles.popupInner}>
                 <button
                   style={{ ...styles.popupButton, ...styles.acceptButton }}
-                  onClick={handleAccept}
-                >
+                  onClick={handleAccept}>
                   Accept
                 </button>
                 <button
                   style={{ ...styles.popupButton, ...styles.blockButton }}
-                  onClick={handleBlock}
-                >
+                  onClick={handleBlock}>
                   Block
                 </button>
               </div>

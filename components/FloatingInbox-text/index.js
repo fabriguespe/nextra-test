@@ -54,7 +54,7 @@ export function FloatingInbox({
     },
     uContainer: {
       position: isContained ? "relative" : isPWA ? "relative" : "fixed",
-      bottom: isContained ? "0px" : isPWA ? "0px" : "80px",
+      bottom: isContained ? "0px" : isPWA ? "0px" : "70px",
       right: isContained ? "0px" : isPWA ? "0px" : "20px",
       width: isContained ? "100%" : isPWA ? "100%" : "300px",
       height: isContained ? "100%" : isPWA ? "100vh" : "400px",
@@ -201,7 +201,7 @@ export function FloatingInbox({
     setIsOpen(false);
   };
 
-  if (typeof window !== "undefined" && window && window.document) {
+  if (typeof window !== "undefined") {
     window.FloatingInbox = {
       open: openWidget,
       close: closeWidget,
@@ -247,12 +247,13 @@ export function FloatingInbox({
       useSnap: true,
       //Cosent enabled by default
     });
-    setClient(xmtp);
-    setIsOnNetwork(!!xmtp.address);
     if (isConsent) {
       //Refresh consent
+      console.log("list refresh");
       await xmtp.contacts.refreshConsentList();
     }
+    setClient(xmtp);
+    setIsOnNetwork(!!xmtp.address);
   };
 
   return (
@@ -261,19 +262,17 @@ export function FloatingInbox({
         <div
           onClick={isOpen ? closeWidget : openWidget}
           className={
-            "FloatingInbox " +
+            "Floating Inbox " +
             (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
           }
-          style={styles.FloatingLogo}
-        >
+          style={styles.FloatingLogo}>
           💬
         </div>
       )}
       {isOpen && (
         <div
           style={styles.uContainer}
-          className={" " + (isOnNetwork ? "expanded" : "")}
-        >
+          className={" " + (isOnNetwork ? "expanded" : "")}>
           {isConnected && (
             <button style={styles.logoutBtn} onClick={handleLogout}>
               Logout
@@ -287,8 +286,7 @@ export function FloatingInbox({
                     style={styles.backButton}
                     onClick={() => {
                       setSelectedConversation(null);
-                    }}
-                  >
+                    }}>
                     ←
                   </button>
                 )}
@@ -357,7 +355,7 @@ export const loadKeys = (walletAddress) => {
 export const storeKeys = (walletAddress, keys) => {
   localStorage.setItem(
     buildLocalStorageKey(walletAddress),
-    Buffer.from(keys).toString(ENCODING)
+    Buffer.from(keys).toString(ENCODING),
   );
 };
 

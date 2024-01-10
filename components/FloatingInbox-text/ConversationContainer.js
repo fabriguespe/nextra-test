@@ -88,6 +88,9 @@ export const ConversationContainer = ({
   };
 
   const selectConversation = async (conversation) => {
+    // Refresh the consent list first
+    await client.contacts.refreshConsentList();
+    // Now it's safe to open the conversation
     setSelectedConversation(conversation);
   };
 
@@ -149,11 +152,8 @@ export const ConversationContainer = ({
       }
     }
   };
-
   if (loading) {
-    return (
-      <div style={{ textAlign: "center", fontSize: "small" }}>Loading...</div>
-    );
+    return <div>Loading...</div>;
   }
   return (
     <div style={styles.conversations}>
@@ -196,8 +196,7 @@ export const ConversationContainer = ({
               style={styles.createNewButton}
               onClick={() => {
                 setSelectedConversation({ messages: [] });
-              }}
-            >
+              }}>
               Create new conversation
             </button>
           )}

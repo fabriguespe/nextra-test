@@ -62,9 +62,8 @@ export const MessageInput = ({
         onClick={() => {
           onSendMessage(newMessage);
           setNewMessage("");
-        }}
-      >
-        Send
+        }}>
+        {isPWA ? "📤" : "Send"}
       </button>
     </div>
   );
