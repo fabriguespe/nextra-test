@@ -172,11 +172,11 @@ export default function Home({
 
   const getAddress = async (signer) => {
     try {
+      //ethers
       if (signer && typeof signer.getAddress === "function") {
         return await signer.getAddress();
-      }
-      if (signer && typeof signer.getAddresses === "function") {
-        //viem
+      } //viem
+      else if (signer && typeof signer.getAddresses === "function") {
         const [address] = await signer.getAddresses();
         return address;
       }
