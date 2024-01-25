@@ -92,7 +92,7 @@ export function ConsentManagement({
       .filter(
         // Filter out duplicates by checking if the current index is the first occurrence of the consent value
         (consent, index, self) =>
-          index === self.findIndex((t) => t.value === consent.value),
+          index === self.findIndex((t) => t.value === consent.value)
       )
       .reverse(); // Reverse the list back to the original order
 
@@ -142,26 +142,42 @@ export function ConsentManagement({
 
   // Function to handle allowing an address
   const handleAllow = async (address) => {
+    // Check if the client object is available
     if (client) {
+      // Confirm with the user if they want to allow the address
       if (window.confirm("Are you sure you want to allow this address?")) {
-        await client.contacts.allow([address]);
+        // Refresh the consent list before performing the allow action
         await refreshConsentList(client);
+        // Perform the allow action on the address
+        await client.contacts.allow([address]);
+        // Refresh the consent list after performing the allow action
+        await refreshConsentList(client);
+        // Trigger the onSubscribe callback with the address and state
         onSubscribe(client.address, "allowed");
       }
     } else {
+      // Log an error if the client object is not available
       console.error("Client is not set");
     }
   };
 
   // Function to handle denying an address
   const handleDeny = async (address) => {
+    // Check if the client object is available
     if (client) {
+      // Confirm with the user if they want to deny the address
       if (window.confirm("Are you sure you want to deny this address?")) {
-        await client.contacts.deny([address]);
+        // Refresh the consent list before performing the deny action
         await refreshConsentList(client);
+        // Perform the deny action on the address
+        await client.contacts.deny([address]);
+        // Refresh the consent list after performing the deny action
+        await refreshConsentList(client);
+        // Trigger the onUnsubscribe callback with the address and state
         onUnsubscribe(client.address, "denied");
       }
     } else {
+      // Log an error if the client object is not available
       console.error("Client is not set");
     }
   };
@@ -170,7 +186,8 @@ export function ConsentManagement({
   return (
     <div
       style={styles.SubscribeButtonContainer}
-      className={`Subscribe ${loading ? "loading" : ""}`}>
+      className={`Subscribe ${loading ? "loading" : ""}`}
+    >
       <button style={styles.SubscribeButton} onClick={handleClick}>
         {loading ? "Loading... " : label}
       </button>
@@ -187,12 +204,14 @@ export function ConsentManagement({
             .map((consent, index) => (
               <div
                 key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}>
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
                 <span style={{ textAlign: "left" }}>{index + 1}.</span>
                 <span style={{ textAlign: "left" }}>{consent.value}</span>
                 <span
                   style={{ color: "red", cursor: "pointer" }}
-                  onClick={() => handleDeny(consent.value)}>
+                  onClick={() => handleDeny(consent.value)}
+                >
                   Deny
                 </span>
               </div>
@@ -205,12 +224,14 @@ export function ConsentManagement({
             .map((consent, index) => (
               <div
                 key={index}
-                style={{ display: "flex", justifyContent: "space-between" }}>
+                style={{ display: "flex", justifyContent: "space-between" }}
+              >
                 <span style={{ textAlign: "left" }}>{index + 1}.</span>
                 <span style={{ textAlign: "left" }}>{consent.value}</span>
                 <span
                   style={{ color: "green", cursor: "pointer" }}
-                  onClick={() => handleAllow(consent.value)}>
+                  onClick={() => handleAllow(consent.value)}
+                >
                   Allow
                 </span>
               </div>
