@@ -21,11 +21,13 @@ bun start
 - [How to Create an ENS + XMTP Contact Page in React](https://xmtp-prototypes.vercel.app/Tutorials/ContactPage)
 - [Support attachments in your app built with XMTP](https://xmtp-prototypes.vercel.app/Tutorials/RemoteAttachments)
 - [Understanding and Building Portable Consent in XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
+- [Portable Consent Management with XMTP](https://xmtp-prototypes.vercel.app/Tutorials/PortableConsent)
 
 #### iFrames
 
 - [Request Inbox](https://xmtp-prototypes.vercel.app/Frames/RequestInbox)
 - [Subscribe](https://xmtp-prototypes.vercel.app/Frames/Subscribe)
+- [Consent Management](https://xmtp-prototypes.vercel.app/Frames/ConsentManagement)
 - [Broadcast](https://xmtp-prototypes.vercel.app/Frames/Broadcast)
 - [ContactPage](https://xmtp-prototypes.vercel.app/Frames/ContactPage)
 - [FloatingInbox](https://xmtp-prototypes.vercel.app/Frames/FloatingInbox)
