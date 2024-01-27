@@ -191,7 +191,7 @@ export const ConversationContainer = ({
             />
           )}
           {message && conversationFound !== true && <small>{message}</small>}
-          {peerAddress && canMessage && (
+          {peerAddress && createNew && (
             <button
               style={styles.createNewButton}
               onClick={() => {
