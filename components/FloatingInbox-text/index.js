@@ -54,7 +54,7 @@ export function FloatingInbox({
     },
     uContainer: {
       position: isContained ? "relative" : isPWA ? "relative" : "fixed",
-      bottom: isContained ? "0px" : isPWA ? "0px" : "70px",
+      bottom: isContained ? "0px" : isPWA ? "0px" : "80px",
       right: isContained ? "0px" : isPWA ? "0px" : "20px",
       width: isContained ? "100%" : isPWA ? "100%" : "300px",
       height: isContained ? "100%" : isPWA ? "100vh" : "400px",
@@ -170,11 +170,12 @@ export function FloatingInbox({
 
   const getAddress = async (signer) => {
     try {
+      //ethers
       if (signer && typeof signer.getAddress === "function") {
         return await signer.getAddress();
       }
-      if (signer && typeof signer.getAddresses === "function") {
-        //viem
+      //viem
+      else if (signer && typeof signer.getAddresses === "function") {
         const [address] = await signer.getAddresses();
         return address;
       }
@@ -183,6 +184,7 @@ export function FloatingInbox({
       console.log(e);
     }
   };
+
   const [isWalletCreated, setIsWalletCreated] = useState(false);
 
   const createNewWallet = async () => {
@@ -207,22 +209,22 @@ export function FloatingInbox({
       close: closeWidget,
     };
   }
-
   const handleLogout = async () => {
     setIsConnected(false);
+    const address = await getAddress(signer);
+    wipeKeys(address);
+    console.log("wipe", address);
     setSigner(null);
     setIsOnNetwork(false);
     setClient(null);
     setSelectedConversation(null);
-    const address = await getAddress(signer);
-    wipeKeys(address);
-    console.log("wipe", address);
     localStorage.removeItem("isOnNetwork");
     localStorage.removeItem("isConnected");
     if (typeof onLogout === "function") {
       onLogout();
     }
   };
+
   const initXmtpWithKeys = async function () {
     if (!signer) {
       handleLogout();
@@ -247,13 +249,12 @@ export function FloatingInbox({
       useSnap: true,
       //Cosent enabled by default
     });
-    if (isConsent) {
-      //Refresh consent
-      console.log("list refresh");
-      await xmtp.contacts.refreshConsentList();
-    }
     setClient(xmtp);
     setIsOnNetwork(!!xmtp.address);
+    if (isConsent) {
+      //Refresh consent
+      await xmtp.contacts.refreshConsentList();
+    }
   };
 
   return (
@@ -262,19 +263,17 @@ export function FloatingInbox({
         <div
           onClick={isOpen ? closeWidget : openWidget}
           className={
-            "Floating Inbox " +
+            "FloatingInbox " +
             (isOpen ? "spin-clockwise" : "spin-counter-clockwise")
           }
-          style={styles.FloatingLogo}
-        >
+          style={styles.FloatingLogo}>
           💬
         </div>
       )}
       {isOpen && (
         <div
           style={styles.uContainer}
-          className={" " + (isOnNetwork ? "expanded" : "")}
-        >
+          className={" " + (isOnNetwork ? "expanded" : "")}>
           {isConnected && (
             <button style={styles.logoutBtn} onClick={handleLogout}>
               Logout
@@ -288,8 +287,7 @@ export function FloatingInbox({
                     style={styles.backButton}
                     onClick={() => {
                       setSelectedConversation(null);
-                    }}
-                  >
+                    }}>
                     ←
                   </button>
                 )}
@@ -358,7 +356,7 @@ export const loadKeys = (walletAddress) => {
 export const storeKeys = (walletAddress, keys) => {
   localStorage.setItem(
     buildLocalStorageKey(walletAddress),
-    Buffer.from(keys).toString(ENCODING)
+    Buffer.from(keys).toString(ENCODING),
   );
 };
 

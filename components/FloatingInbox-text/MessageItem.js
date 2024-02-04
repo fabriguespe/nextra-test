@@ -6,7 +6,7 @@ export const MessageItem = ({ message, senderAddress, client }) => {
       <div style={styles.footer}>
         <span style={styles.timeStamp}>
           {`${new Date(timestamp).getHours()}:${String(
-            new Date(timestamp).getMinutes()
+            new Date(timestamp).getMinutes(),
           ).padStart(2, "0")}`}
         </span>
       </div>
@@ -14,6 +14,7 @@ export const MessageItem = ({ message, senderAddress, client }) => {
   };
 
   const renderMessage = (message) => {
+    console.log("message", message);
     const codec = client.codecFor(message.contentType);
     let content = message.content;
     if (!codec) {
@@ -37,8 +38,7 @@ export const MessageItem = ({ message, senderAddress, client }) => {
   return (
     <MessageComponent
       style={isSender ? styles.senderMessage : styles.receiverMessage}
-      key={message.id}
-    >
+      key={message.id}>
       {renderMessage(message)}
     </MessageComponent>
   );
