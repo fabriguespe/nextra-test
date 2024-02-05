@@ -19,6 +19,7 @@
   "homepage": "https://github.com/shuding/nextra-docs-template#readme",
   "dependencies": {
     "@ensdomains/ens-avatar": "0.2.5",
+    "@xmtp/frames-client": "^0.1.4",
     "@xmtp/react-sdk": "^3.0.0",
     "@xmtp/xmtp-js": "^11.3.2",
     "inter-ui": "^3.19.3",

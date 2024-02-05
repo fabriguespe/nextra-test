@@ -30,8 +30,8 @@ bun start
 - [Consent Management](https://xmtp-prototypes.vercel.app/Frames/ConsentManagement)
 - [Broadcast](https://xmtp-prototypes.vercel.app/Frames/Broadcast)
 - [ContactPage](https://xmtp-prototypes.vercel.app/Frames/ContactPage)
-- [FloatingInbox](https://xmtp-prototypes.vercel.app/Frames/FloatingInbox)
-- [RemoteAttachments](https://xmtp-prototypes.vercel.app/Frames/RemoteAttachment)
+- [Floating Inbox](https://xmtp-prototypes.vercel.app/Frames/FloatingInbox)
+- [RemoteAttachments](https://xmtp-prototypes.vercel.app/Frames/RemoteAttachments)
 - Contact
   - [ContactPage](https://xmtp-prototypes.vercel.app/Frames/ContactPage)
   - [ContactLink](https://xmtp-prototypes.vercel.app/Frames/ContactLink)
@@ -49,9 +49,6 @@ bun start
 - [Subscribe](https://xmtp-prototypes.vercel.app/Widgets/Subscribe): Subscribe to another wallet, newsletter, company or campaign.
 - [Enable](https://xmtp-prototypes.vercel.app/Widgets/Enable): Button for enabling XMTP identity for the first time.
 - [Floating Inbox](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox): Embeddable web bottom right chat widget with content types and js sdk.
-- [Floating Inbox (Text)](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-text): Embeddable web bottom right chat widget with only text.
-- [Floating Inbox (Hooks)](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-hooks): Inbox built with the react sdk hooks and only text.
-- [Floating Inbox (Hooks CT)](https://xmtp-prototypes.vercel.app/Widgets/FloatingInbox-hooks-ct): Embeddable web bottom right chat widget with attachments and remote.
 - [Broadcast](https://xmtp-prototypes.vercel.app/Widgets/Broadcast): Broadcast widgets for sending a message to multiple wallets.
 - Contact
   - [Buttons](https://xmtp-prototypes.vercel.app/Widgets/Contact/Buttons): Styled buttons with a dropdown showcasing different clients.
